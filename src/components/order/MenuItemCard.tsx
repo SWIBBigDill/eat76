@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useCart } from "@/context/CartContext";
@@ -13,18 +14,30 @@ type MenuItemCardProps = {
 
 export function MenuItemCard({ item, restaurantImage }: MenuItemCardProps) {
   const { addItem } = useCart();
+  const [justAdded, setJustAdded] = useState(false);
   const imageSrc = item.image ?? restaurantImage;
 
+  function handleAdd() {
+    addItem({
+      menuItemId: item.id,
+      name: item.name,
+      price: item.price,
+    });
+    setJustAdded(true);
+    window.setTimeout(() => setJustAdded(false), 800);
+  }
+
   return (
-    <Card padding="sm" className="flex gap-4 overflow-hidden">
+    <Card padding="sm" className="flex gap-4 overflow-hidden transition-shadow hover:shadow-md">
       {imageSrc && (
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-eat-soft">
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-eat-soft sm:h-24 sm:w-24">
           <Image
             src={imageSrc}
             alt={item.name}
             fill
             className="object-cover"
-            sizes="80px"
+            sizes="96px"
+            loading="lazy"
           />
         </div>
       )}
@@ -34,17 +47,13 @@ export function MenuItemCard({ item, restaurantImage }: MenuItemCardProps) {
         <p className="mt-2 font-bold text-eat-blue">${item.price.toFixed(2)}</p>
       </div>
       <Button
-        variant="outline"
-        className="shrink-0 self-center px-4 py-2"
-        onClick={() =>
-          addItem({
-            menuItemId: item.id,
-            name: item.name,
-            price: item.price,
-          })
-        }
+        variant={justAdded ? "primary" : "outline"}
+        className={`tap-target shrink-0 self-center min-w-[72px] px-4 py-2 transition-all ${
+          justAdded ? "animate-add-pop bg-eat-red border-eat-red hover:bg-eat-red-dark" : ""
+        }`}
+        onClick={handleAdd}
       >
-        Add
+        {justAdded ? "Added ✓" : "Add"}
       </Button>
     </Card>
   );

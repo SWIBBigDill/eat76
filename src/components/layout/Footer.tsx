@@ -1,8 +1,12 @@
 import { Logo } from "@/components/brand/Logo";
 
-export function Footer() {
+type FooterProps = {
+  className?: string;
+};
+
+export function Footer({ className = "" }: FooterProps) {
   return (
-    <footer className="mt-auto border-t border-eat-border bg-eat-soft">
+    <footer className={`mt-auto border-t border-eat-border bg-eat-soft ${className}`}>
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center">
         <Logo size="sm" />
         <p className="text-sm font-semibold text-eat-blue">

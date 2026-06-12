@@ -24,8 +24,9 @@ Open [http://localhost:3000](http://localhost:3000).
 | `/` | Landing page |
 | `/restaurants` | Restaurant signup + savings calculator |
 | `/drivers` | Driver recruitment |
-| `/order` | Customer ordering (demo) |
-| `/order/[restaurant]` | Menu + cart |
+| `/order` | Customer ordering — zone filters, search, mobile FAB |
+| `/order/[restaurant]` | Menu + cart with hero banner & sticky checkout bar |
+| `/order/confirmation` | Demo order confirmation + savings recap |
 | `/pricing` | Transparent pricing |
 | `/restaurant-dashboard` | Mock restaurant admin |
 | `/driver-dashboard` | Mock driver dispatch |
@@ -73,6 +74,14 @@ npx vercel deploy --prod
 ```bash
 npm run fetch-assets   # refreshes public/restaurants/* and imageManifest.json
 ```
+
+## Mobile UX & checkout savings
+
+- **Bottom tab nav** on mobile (Home, Order, Restaurants, Drivers)
+- **Zone filter chips** and restaurant search on `/order`
+- **Cart persists** in `localStorage`; demo checkout saves to `sessionStorage`
+- **Checkout savings** — side-by-side comparison vs typical big-app fees (~15% markup + delivery + service) via `calculateCustomerCheckoutComparison()` in `src/lib/pricing.ts`
+- **Micro-interactions** — add-to-cart feedback, cart badge pulse, slide-up cart sheet, `prefers-reduced-motion` support
 
 ## Future integrations
 

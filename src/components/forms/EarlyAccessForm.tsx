@@ -78,14 +78,19 @@ export function EarlyAccessForm({ type, title, description }: EarlyAccessFormPro
 
   if (submitted) {
     return (
-      <Card className="text-center">
-        <p className="text-lg font-semibold text-eat-blue">You&apos;re on the list.</p>
+      <Card className="text-center animate-success-pop">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-eat-blue/10 text-eat-blue">
+          <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <p className="mt-4 text-lg font-semibold text-eat-blue">You&apos;re on the list.</p>
         <p className="mt-2 text-sm text-eat-muted">
           Thanks for your interest in Eat76. We&apos;ll be in touch soon.
         </p>
         <Button
           variant="outline"
-          className="mt-4"
+          className="mt-4 tap-target"
           onClick={() => setSubmitted(false)}
         >
           Submit another

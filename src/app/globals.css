@@ -50,3 +50,117 @@ body {
     padding: 4rem 1.5rem;
   }
 }
+
+/* Mobile-first utilities */
+.tap-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Animations — respect reduced motion */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes cart-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+
+@keyframes add-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse-once {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@keyframes success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  60% {
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.animate-cart-pulse {
+  animation: cart-pulse 0.5s ease-out;
+}
+
+.animate-add-pop {
+  animation: add-pop 0.35s ease-out;
+}
+
+.animate-pulse-once {
+  animation: pulse-once 0.6s ease-out;
+}
+
+.animate-success-pop {
+  animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-slide-up,
+  .animate-cart-pulse,
+  .animate-add-pop,
+  .animate-pulse-once,
+  .animate-success-pop,
+  .group:hover .object-cover {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

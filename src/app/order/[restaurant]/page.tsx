@@ -16,7 +16,15 @@ export default function RestaurantMenuPage() {
   const restaurantId = params.restaurant as string;
   const restaurant = getRestaurantById(restaurantId);
   const menu = getMenuByRestaurant(restaurantId);
-  const { setRestaurant, restaurantId: cartRestaurantId, clearCart } = useCart();
+  const {
+    setRestaurant,
+    restaurantId: cartRestaurantId,
+    clearCart,
+    itemCount,
+    total,
+    isCartOpen,
+    setCartOpen,
+  } = useCart();
 
   useEffect(() => {
     if (restaurant) {
@@ -29,7 +37,7 @@ export default function RestaurantMenuPage() {
 
   if (!restaurant) {
     return (
-      <PageShell>
+      <PageShell className="pb-20 md:pb-0">
         <div className="mx-auto max-w-6xl px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-eat-ink">Restaurant not found</h1>
           <Link href="/order" className="mt-4 inline-block text-eat-blue font-semibold">
@@ -40,62 +48,51 @@ export default function RestaurantMenuPage() {
     );
   }
 
-  const heroSrc =
-    restaurant.image ?? `/restaurants/${restaurant.id}/hero.svg`;
+  const imageSrc = restaurant.image ?? `/restaurants/${restaurant.id}/hero.svg`;
 
   return (
-    <PageShell className="pb-28 lg:pb-8">
-      <section className="relative bg-eat-soft">
-        <div className="relative mx-auto max-w-6xl">
-          <div className="relative h-48 w-full sm:h-56 md:h-64">
-            <Image
-              src={heroSrc}
-              alt={`${restaurant.name} — ${restaurant.foodType}`}
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-          </div>
-          <div className="absolute inset-x-0 bottom-0 mx-auto max-w-6xl px-4 pb-5">
-            <Link href="/order" className="text-sm font-semibold text-white/90 hover:text-white">
+    <PageShell className="pb-20 md:pb-0">
+      {/* Hero banner */}
+      <section className="relative">
+        <div className="relative h-48 w-full bg-eat-soft sm:h-56 md:h-64">
+          <Image
+            src={imageSrc}
+            alt={`${restaurant.name} — local restaurant`}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 mx-auto max-w-6xl px-4 pb-6">
+            <Link
+              href="/order"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-white/90 hover:text-white"
+            >
               ← All restaurants
             </Link>
-            <h1 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
+            <h1 className="mt-2 text-3xl font-bold text-white drop-shadow-sm">
               {restaurant.name}
             </h1>
-            <p className="mt-1 text-sm text-white/90">
+            <p className="mt-1 text-sm text-white/85">
               {restaurant.foodType} · {restaurant.distance} · {restaurant.deliveryTime}
             </p>
+            <span className="mt-2 inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur">
+              ★ {restaurant.rating}
+            </span>
           </div>
         </div>
       </section>
 
-      <section className="eat-section pt-4">
+      <section className="eat-section pt-6">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-eat-muted">
-            <span>{restaurant.address}</span>
-            {restaurant.phone && <span>{restaurant.phone}</span>}
-            {restaurant.website && (
-              <a
-                href={restaurant.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-eat-blue hover:underline"
-              >
-                Restaurant website
-              </a>
-            )}
-          </div>
-
           <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
             <div className="space-y-3">
               {menu.map((item) => (
                 <MenuItemCard
                   key={item.id}
                   item={item}
-                  restaurantImage={heroSrc}
+                  restaurantImage={imageSrc}
                 />
               ))}
             </div>
@@ -103,6 +100,23 @@ export default function RestaurantMenuPage() {
           </div>
         </div>
       </section>
+
+      {/* Sticky add-to-cart bar when items in cart (mobile) */}
+      {itemCount > 0 && !isCartOpen && (
+        <div className="fixed inset-x-0 z-30 border-t border-eat-border bg-white px-4 py-3 shadow-lg lg:hidden bottom-[calc(3.5rem+env(safe-area-inset-bottom))]">
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="tap-target flex w-full items-center justify-between rounded-2xl bg-eat-blue px-5 py-3.5 text-white"
+          >
+            <span className="font-semibold">
+              View cart · {itemCount} item{itemCount !== 1 ? "s" : ""}
+            </span>
+            <span className="font-bold">${total.toFixed(2)}</span>
+          </button>
+        </div>
+      )}
+
     </PageShell>
   );
 }
