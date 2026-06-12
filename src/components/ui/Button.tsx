@@ -29,7 +29,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold transition-colors disabled:opacity-50";
+    "inline-flex items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold transition-[color,background-color,border-color,box-shadow,transform] active:scale-[0.98] motion-reduce:active:scale-100 disabled:opacity-50";
 
   const classes = `${base} ${variants[variant]} ${className}`;
 

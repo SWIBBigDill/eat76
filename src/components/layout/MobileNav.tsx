@@ -131,7 +131,7 @@ export function MobileNav() {
                 <Link
                   key={tab.href}
                   href={tab.href}
-                  className="-mt-3 flex min-h-[64px] min-w-[72px] flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl bg-eat-blue px-3 py-2 text-xs font-bold text-white shadow-lg transition-transform active:scale-95 tap-target"
+                  className="-mt-3 flex min-h-[64px] min-w-[72px] flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl bg-gradient-to-b from-eat-blue to-eat-blue-dark px-3 py-2 text-xs font-bold text-white shadow-lg shadow-eat-blue/30 transition-transform active:scale-95 motion-reduce:active:scale-100 tap-target"
                   aria-current={active ? "page" : undefined}
                 >
                   {tab.icon(active)}

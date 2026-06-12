@@ -40,7 +40,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
       <HeroSection />
-      <section className="eat-section pt-0">
+      <section className="eat-section pt-10 md:pt-12">
         <div className="mx-auto max-w-6xl px-4">
           <PopularNearYou limit={4} />
         </div>

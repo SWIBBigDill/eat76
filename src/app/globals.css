@@ -136,6 +136,16 @@ body {
   }
 }
 
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0) rotate(var(--float-rotate, 0deg)); }
+  50% { transform: translateY(-8px) rotate(var(--float-rotate, 0deg)); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 .animate-fade-in {
   animation: fade-in 0.25s ease-out both;
 }
@@ -168,6 +178,24 @@ body {
   animation: pulse-soft 2s ease-in-out infinite;
 }
 
+.animate-float-soft {
+  animation: float-soft 5s ease-in-out infinite;
+}
+
+.animate-float-softer {
+  animation: float-soft 7s ease-in-out 1.2s infinite;
+}
+
+.animate-marquee {
+  animation: marquee 45s linear infinite;
+}
+
+/* Subtle dot-grid texture for hero backgrounds */
+.eat-dots {
+  background-image: radial-gradient(rgba(0, 71, 186, 0.09) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-fade-in-up,
@@ -177,6 +205,9 @@ body {
   .animate-pulse-once,
   .animate-success-pop,
   .animate-pulse-soft,
+  .animate-float-soft,
+  .animate-float-softer,
+  .animate-marquee,
   .group:hover .object-cover {
     animation: none !important;
     transition: none !important;

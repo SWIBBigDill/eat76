@@ -31,10 +31,10 @@ export function PartnerSection() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`tap-target rounded-full px-4 py-2.5 text-sm font-semibold transition ${
+              className={`tap-target rounded-full px-4 py-2.5 text-sm font-semibold transition active:scale-[0.97] motion-reduce:active:scale-100 ${
                 activeTab === tab.id
-                  ? "bg-eat-blue text-white shadow-sm"
-                  : "border border-eat-border bg-white text-eat-muted hover:border-eat-blue/40 hover:text-eat-blue"
+                  ? "bg-eat-blue text-white shadow-md shadow-eat-blue/25"
+                  : "border border-eat-border bg-white text-eat-muted hover:border-eat-blue/40 hover:text-eat-blue hover:shadow-sm"
               }`}
             >
               {tab.label}

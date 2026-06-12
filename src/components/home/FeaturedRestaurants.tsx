@@ -14,10 +14,14 @@ export function FeaturedRestaurants() {
   const featured = getFeaturedRestaurants();
 
   return (
-    <section className="eat-section">
+    <section className="eat-section bg-gradient-to-b from-white to-eat-soft/60">
       <div className="mx-auto max-w-6xl px-4">
+        <p className="text-center text-xs font-bold uppercase tracking-wider text-eat-red">
+          Hungry now?
+        </p>
         <SectionHeading
           centered
+          className="mt-2"
           title="Browse local restaurants"
           subtitle="Top-rated spots in Kennett Square. Real menus, real photos, delivered by neighbors who know the area."
         />
@@ -35,8 +39,8 @@ export function FeaturedRestaurants() {
         </div>
 
         <div className="mt-10 text-center">
-          <Button href="/order" variant="primary" className="px-8">
-            See all restaurants
+          <Button href="/order" variant="primary" className="tap-target px-8">
+            See all {restaurants.length}+ restaurants
           </Button>
         </div>
       </div>

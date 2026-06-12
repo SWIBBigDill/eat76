@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const steps = [
@@ -43,19 +42,34 @@ export function HowItWorksSection() {
           title="How ordering works"
           subtitle="Three simple steps. Built for hungry neighbors, not corporate dashboards."
         />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {steps.map((item) => (
-            <Card key={item.step} className="text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-eat-blue/10 text-eat-blue">
-                {item.icon}
-              </div>
-              <span className="mt-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-eat-blue text-sm font-bold text-white">
-                {item.step}
-              </span>
-              <h3 className="mt-3 font-bold text-eat-ink">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-eat-muted">{item.text}</p>
-            </Card>
-          ))}
+        <div className="relative mt-12">
+          <div
+            className="absolute left-[18%] right-[18%] top-9 hidden border-t-2 border-dashed border-eat-blue/25 md:block"
+            aria-hidden
+          />
+          <ol className="grid gap-10 md:grid-cols-3 md:gap-6">
+            {steps.map((item) => (
+              <li
+                key={item.step}
+                className="relative flex flex-col items-center text-center"
+              >
+                <div className="relative">
+                  <div className="flex h-[72px] w-[72px] items-center justify-center rounded-3xl border border-eat-blue/15 bg-white text-eat-blue shadow-md shadow-eat-blue/10">
+                    {item.icon}
+                  </div>
+                  <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-eat-red text-xs font-bold text-white shadow-sm">
+                    {item.step}
+                  </span>
+                </div>
+                <h3 className="mt-5 text-lg font-bold text-eat-ink">
+                  {item.title}
+                </h3>
+                <p className="mt-2 max-w-xs text-sm leading-relaxed text-eat-muted">
+                  {item.text}
+                </p>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>
