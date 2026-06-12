@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --eat-blue: #0047ba;
+  --eat-blue-dark: #002f7a;
+  --eat-red: #ed174c;
+  --eat-red-dark: #b91036;
+  --eat-white: #ffffff;
+  --eat-ink: #111827;
+  --eat-muted: #6b7280;
+  --eat-soft: #f5f7fb;
+  --eat-border: #e5e7eb;
+  --background: var(--eat-white);
+  --foreground: var(--eat-ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-eat-blue: var(--eat-blue);
+  --color-eat-blue-dark: var(--eat-blue-dark);
+  --color-eat-red: var(--eat-red);
+  --color-eat-red-dark: var(--eat-red-dark);
+  --color-eat-ink: var(--eat-ink);
+  --color-eat-muted: var(--eat-muted);
+  --color-eat-soft: var(--eat-soft);
+  --color-eat-border: var(--eat-border);
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.eat-card {
+  background: var(--eat-white);
+  border: 1px solid var(--eat-border);
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 47, 122, 0.06);
+}
+
+.eat-section {
+  padding: 3rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .eat-section {
+    padding: 4rem 1.5rem;
+  }
+}
