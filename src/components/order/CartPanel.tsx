@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { useCart } from "@/context/CartContext";
+import { isStripeClientConfigured } from "@/lib/stripe/client";
 
 const TIP_OPTIONS = [0, 2, 4, 6, 8];
 
@@ -16,6 +17,7 @@ function formatMoney(value: number) {
 export function CartPanel() {
   const {
     items,
+    restaurantId,
     restaurantName,
     subtotal,
     serviceFee,
@@ -31,6 +33,9 @@ export function CartPanel() {
     placeOrder,
   } = useCart();
   const router = useRouter();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const stripeReady = isStripeClientConfigured();
 
   useEffect(() => {
     if (itemCount === 0) setCartOpen(false);
@@ -38,14 +43,65 @@ export function CartPanel() {
 
   if (itemCount === 0) return null;
 
-  function handlePlaceOrder() {
+  async function handlePlaceOrder() {
+    setCheckoutError(null);
+
+    if (stripeReady && restaurantId && restaurantName) {
+      setCheckoutLoading(true);
+      try {
+        const response = await fetch("/api/stripe/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            restaurantId,
+            restaurantName,
+            items,
+            subtotal,
+            serviceFee,
+            deliveryFee,
+            tip,
+            total,
+          }),
+        });
+        const data = (await response.json()) as { url?: string; error?: string };
+
+        if (response.status === 503 || !response.ok || !data.url) {
+          setCheckoutError(data.error ?? "Stripe unavailable — using demo checkout.");
+          placeDemoOrder();
+          return;
+        }
+
+        window.location.href = data.url;
+      } catch {
+        setCheckoutError("Network error — placing demo order instead.");
+        placeDemoOrder();
+      } finally {
+        setCheckoutLoading(false);
+      }
+      return;
+    }
+
+    placeDemoOrder();
+  }
+
+  function placeDemoOrder() {
     const order = placeOrder();
-    if (order) router.push("/order/confirmation");
+    if (order) {
+      void fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...order,
+          status: "placed",
+          source: "demo",
+        }),
+      }).catch(() => undefined);
+      router.push("/order/confirmation");
+    }
   }
 
   return (
     <>
-      {/* Desktop sidebar */}
       <Card className="hidden lg:block sticky top-24">
         <CartContent
           items={items}
@@ -59,10 +115,12 @@ export function CartPanel() {
           updateQuantity={updateQuantity}
           clearCart={clearCart}
           onPlaceOrder={handlePlaceOrder}
+          checkoutLoading={checkoutLoading}
+          checkoutError={checkoutError}
+          stripeReady={stripeReady}
         />
       </Card>
 
-      {/* Mobile slide-up sheet */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
@@ -89,6 +147,9 @@ export function CartPanel() {
                 clearCart={clearCart}
                 onPlaceOrder={handlePlaceOrder}
                 compact
+                checkoutLoading={checkoutLoading}
+                checkoutError={checkoutError}
+                stripeReady={stripeReady}
               />
             </div>
           </div>
@@ -111,6 +172,9 @@ type CartContentProps = {
   clearCart: () => void;
   onPlaceOrder: () => void;
   compact?: boolean;
+  checkoutLoading?: boolean;
+  checkoutError?: string | null;
+  stripeReady?: boolean;
 };
 
 function CartContent({
@@ -126,11 +190,19 @@ function CartContent({
   clearCart,
   onPlaceOrder,
   compact,
+  checkoutLoading,
+  checkoutError,
+  stripeReady,
 }: CartContentProps) {
   return (
     <div className={compact ? "space-y-4" : "space-y-4"}>
       {!compact && (
-        <h3 className="text-lg font-bold text-eat-ink">Your cart</h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-lg font-bold text-eat-ink">Your cart</h3>
+          <span className="rounded-full bg-eat-soft px-2.5 py-1 text-xs font-bold text-eat-blue">
+            {items.reduce((n, i) => n + i.quantity, 0)} items
+          </span>
+        </div>
       )}
       {restaurantName && (
         <p className="text-sm text-eat-muted">From {restaurantName}</p>
@@ -213,8 +285,22 @@ function CartContent({
         Delivery supports local driver pay. Service keeps Eat76 operating locally. Tips go 100% to your driver.
       </p>
 
-      <Button className="w-full tap-target" onClick={onPlaceOrder}>
-        Place Order (Demo)
+      {checkoutError && (
+        <p className="text-xs text-eat-red" role="alert">
+          {checkoutError}
+        </p>
+      )}
+
+      <Button
+        className="w-full tap-target"
+        onClick={onPlaceOrder}
+        disabled={checkoutLoading}
+      >
+        {checkoutLoading
+          ? "Redirecting to checkout…"
+          : stripeReady
+            ? "Pay with Stripe"
+            : "Place Order (Demo)"}
       </Button>
       <Button variant="ghost" className="w-full text-sm tap-target" onClick={clearCart}>
         Clear cart

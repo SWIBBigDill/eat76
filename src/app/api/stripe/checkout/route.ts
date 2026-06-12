@@ -5,6 +5,7 @@ import {
   validateCheckoutPayload,
   type CheckoutCartPayload,
 } from "@/lib/stripe/checkout";
+import { generateOrderId } from "@/lib/order-tracking";
 import { eat76Metadata } from "@/lib/stripe/constants";
 import { getStripe, isStripeServerConfigured } from "@/lib/stripe/server";
 
@@ -37,16 +38,24 @@ export async function POST(request: Request) {
     const stripe = getStripe();
     const paymentIntentData = buildConnectPaymentIntentData(payload);
 
+    const orderId = generateOrderId();
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: buildCheckoutLineItems(payload),
-      success_url: `${origin}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/order/${payload.restaurantId}`,
+      success_url: `${origin}/order/success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId}`,
+      cancel_url: `${origin}/order/cancel?restaurant=${payload.restaurantId}`,
       metadata: eat76Metadata({
+        order_id: orderId,
         restaurant_id: payload.restaurantId,
         restaurant_name: payload.restaurantName,
         tip: String(payload.tip),
         food_subtotal: String(payload.subtotal),
+        item_count: String(payload.items.length),
+        savings: String(
+          payload.total -
+            (payload.subtotal * 1.15 + 6.99 + 3.99 + payload.tip)
+        ),
       }),
       ...(paymentIntentData ? { payment_intent_data: paymentIntentData } : {}),
     });

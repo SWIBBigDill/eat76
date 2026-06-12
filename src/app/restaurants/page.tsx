@@ -6,6 +6,8 @@ import { StripeConnectOnboardButton } from "@/components/stripe/StripeConnectOnb
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FaqAccordion } from "@/components/ui/FaqAccordion";
+import { restaurantFaqs } from "@/data/faqs";
 
 export default function RestaurantsPage() {
   return (
@@ -72,6 +74,13 @@ export default function RestaurantsPage() {
       <section className="eat-section bg-eat-soft">
         <div className="mx-auto max-w-6xl px-4">
           <RestaurantSavingsCalculator />
+        </div>
+      </section>
+
+      <section className="eat-section bg-eat-soft">
+        <div className="mx-auto max-w-3xl px-4">
+          <SectionHeading centered title="Restaurant FAQ" />
+          <FaqAccordion items={restaurantFaqs} className="mt-8" />
         </div>
       </section>
 

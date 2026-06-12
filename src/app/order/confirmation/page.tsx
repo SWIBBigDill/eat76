@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
+import { OrderTracker } from "@/components/order/OrderTracker";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { loadPlacedOrder, type PlacedOrder } from "@/context/CartContext";
@@ -55,7 +56,7 @@ export default function OrderConfirmationPage() {
             </div>
             <h1 className="mt-4 text-2xl font-bold text-eat-ink">Order placed!</h1>
             <p className="mt-2 text-eat-muted">
-              Demo confirmation — payments coming soon.
+              Your order is on its way. Track live status below.
             </p>
             <p className="mt-1 text-sm font-semibold text-eat-blue">
               Order {order.id}
@@ -63,6 +64,22 @@ export default function OrderConfirmationPage() {
           </div>
 
           <Card className="mt-8">
+            <p className="text-sm font-semibold text-eat-ink">Live tracking (demo)</p>
+            <p className="mt-1 text-xs text-eat-muted">
+              Status advances automatically — pattern from Grub order progress UI.
+            </p>
+            <div className="mt-4">
+              <OrderTracker placedAt={order.placedAt} />
+            </div>
+            <Link
+              href={`/order/track/${order.id}`}
+              className="mt-4 inline-flex text-sm font-semibold text-eat-blue hover:underline"
+            >
+              Open full tracking view →
+            </Link>
+          </Card>
+
+          <Card className="mt-6">
             <p className="text-sm font-semibold text-eat-ink">{order.restaurantName}</p>
             <p className="text-xs text-eat-muted">{placedTime}</p>
 
@@ -110,8 +127,11 @@ export default function OrderConfirmationPage() {
           )}
 
           <div className="mt-8 flex flex-col gap-3">
-            <Button href="/order">Order again</Button>
-            <Button href="/" variant="outline">
+            <Button href={`/order/track/${order.id}`}>Track order</Button>
+            <Button href="/order" variant="outline">
+              Order again
+            </Button>
+            <Button href="/" variant="ghost">
               Back to home
             </Button>
             <Link

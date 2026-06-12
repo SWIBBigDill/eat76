@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { CartPanel } from "@/components/order/CartPanel";
-import { MenuItemCard } from "@/components/order/MenuItemCard";
+import { MenuCategoryNav } from "@/components/order/MenuCategoryNav";
 import { useCart } from "@/context/CartContext";
 import { getMenuByRestaurant } from "@/data/menuItems";
 import { getRestaurantById } from "@/data/restaurants";
+import { groupMenuIntoCategories } from "@/lib/menu-categories";
 
 export default function RestaurantMenuPage() {
   const params = useParams();
@@ -34,6 +35,8 @@ export default function RestaurantMenuPage() {
       setRestaurant(restaurant.id, restaurant.name);
     }
   }, [restaurant, cartRestaurantId, setRestaurant, clearCart]);
+
+  const menuSections = useMemo(() => groupMenuIntoCategories(menu), [menu]);
 
   if (!restaurant) {
     return (
@@ -87,15 +90,7 @@ export default function RestaurantMenuPage() {
       <section className="eat-section pt-6">
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-            <div className="space-y-3">
-              {menu.map((item) => (
-                <MenuItemCard
-                  key={item.id}
-                  item={item}
-                  restaurantImage={imageSrc}
-                />
-              ))}
-            </div>
+            <MenuCategoryNav sections={menuSections} restaurantImage={imageSrc} />
             <CartPanel />
           </div>
         </div>

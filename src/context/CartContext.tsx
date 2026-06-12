@@ -15,6 +15,7 @@ import {
   SERVICE_FEE,
   calculateCustomerCheckoutComparison,
 } from "@/lib/pricing";
+import { generateOrderId, persistLastOrder } from "@/lib/order-tracking";
 
 const CART_STORAGE_KEY = "eat76-cart";
 const ORDER_STORAGE_KEY = "eat76-last-order";
@@ -89,6 +90,7 @@ export function savePlacedOrder(order: PlacedOrder) {
   if (typeof window === "undefined") return;
   try {
     sessionStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(order));
+    persistLastOrder(order);
   } catch {
     /* ignore */
   }
@@ -97,7 +99,9 @@ export function savePlacedOrder(order: PlacedOrder) {
 export function loadPlacedOrder(): PlacedOrder | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = sessionStorage.getItem(ORDER_STORAGE_KEY);
+    const raw =
+      sessionStorage.getItem(ORDER_STORAGE_KEY) ??
+      localStorage.getItem("eat76-last-order");
     if (!raw) return null;
     return JSON.parse(raw) as PlacedOrder;
   } catch {
@@ -205,7 +209,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
 
     const order: PlacedOrder = {
-      id: `E76-${Date.now().toString(36).toUpperCase()}`,
+      id: generateOrderId(),
       restaurantId,
       restaurantName,
       items: [...items],

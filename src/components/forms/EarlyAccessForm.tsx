@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input, Select, TextArea } from "@/components/ui/Input";
-import { saveSubmission } from "@/lib/submissions";
+import { saveSubmission as saveLocalSubmission } from "@/lib/submissions";
 import type { EarlyAccessType } from "@/lib/types";
 
 type EarlyAccessFormProps = {
@@ -16,17 +16,19 @@ type EarlyAccessFormProps = {
 export function EarlyAccessForm({ type, title, description }: EarlyAccessFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     const form = new FormData(e.currentTarget);
     const submittedAt = new Date().toISOString();
 
-    // TODO: Supabase insert — replace localStorage persistence
+    let payload;
     if (type === "restaurant") {
-      saveSubmission({
-        type: "restaurant",
+      payload = {
+        type: "restaurant" as const,
         businessName: String(form.get("businessName") ?? ""),
         contactName: String(form.get("contactName") ?? ""),
         email: String(form.get("email") ?? ""),
@@ -36,10 +38,10 @@ export function EarlyAccessForm({ type, title, description }: EarlyAccessFormPro
         currentDeliveryApp: String(form.get("currentDeliveryApp") ?? ""),
         notes: String(form.get("notes") ?? ""),
         submittedAt,
-      });
+      };
     } else if (type === "driver") {
-      saveSubmission({
-        type: "driver",
+      payload = {
+        type: "driver" as const,
         name: String(form.get("name") ?? ""),
         email: String(form.get("email") ?? ""),
         phone: String(form.get("phone") ?? ""),
@@ -48,15 +50,29 @@ export function EarlyAccessForm({ type, title, description }: EarlyAccessFormPro
         vehicleType: String(form.get("vehicleType") ?? ""),
         notes: String(form.get("notes") ?? ""),
         submittedAt,
-      });
+      };
     } else {
-      saveSubmission({
-        type: "customer",
+      payload = {
+        type: "customer" as const,
         name: String(form.get("name") ?? ""),
         email: String(form.get("email") ?? ""),
         zipCode: String(form.get("zipCode") ?? ""),
         submittedAt,
+      };
+    }
+
+    try {
+      const response = await fetch("/api/early-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
+
+      if (!response.ok) {
+        saveLocalSubmission(payload);
+      }
+    } catch {
+      saveLocalSubmission(payload);
     }
 
     setLoading(false);
@@ -107,6 +123,12 @@ export function EarlyAccessForm({ type, title, description }: EarlyAccessFormPro
       <p className="mt-2 text-sm text-eat-muted">
         {description ?? descriptions[type]}
       </p>
+
+      {error && (
+        <p className="mt-3 text-sm text-eat-red" role="alert">
+          {error}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
         {type === "restaurant" && (

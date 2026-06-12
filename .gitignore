@@ -41,4 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# MVP runtime data (file store — swap to Supabase in production)
+/data/
+!data/.gitkeep

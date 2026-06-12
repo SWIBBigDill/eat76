@@ -1,0 +1,19 @@
+{
+  "name": "Eat76 — Local food delivery",
+  "short_name": "Eat76",
+  "description": "Local-first food delivery for 19348. Independent restaurants, local drivers, transparent fees.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e4fd6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["food", "shopping"]
+}

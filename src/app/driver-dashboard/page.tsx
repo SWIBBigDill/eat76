@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { MockLoginBanner } from "@/components/ui/MockLoginBanner";
 import { Button } from "@/components/ui/Button";
@@ -31,6 +31,16 @@ export default function DriverDashboardPage() {
   const active = deliveries.filter((d) => d.status !== "delivered");
   const completed = deliveries.filter((d) => d.status === "delivered");
 
+  const earningsToday = useMemo(() => {
+    return deliveries
+      .filter((d) => d.status === "delivered" || d.status === "picked_up" || d.status === "claimed")
+      .reduce((sum, d) => sum + d.basePay + (d.status === "delivered" ? d.tip : 0), 0);
+  }, [deliveries]);
+
+  const completedEarnings = useMemo(() => {
+    return completed.reduce((sum, d) => sum + d.basePay + d.tip, 0);
+  }, [completed]);
+
   const advanceDelivery = (id: string) => {
     setDeliveries((prev) =>
       prev.map((d) => {
@@ -40,7 +50,6 @@ export default function DriverDashboardPage() {
         return { ...d, status: action.next };
       })
     );
-    // TODO: Supabase — update delivery status
   };
 
   return (
@@ -57,7 +66,27 @@ export default function DriverDashboardPage() {
 
       <section className="eat-section pt-0">
         <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-xl font-bold text-eat-ink">Available deliveries</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Card>
+              <p className="text-xs uppercase tracking-wide text-eat-muted">Earnings today</p>
+              <p className="mt-1 text-2xl font-bold text-eat-red">{formatMoney(earningsToday)}</p>
+              <p className="mt-1 text-xs text-eat-muted">
+                {completed.length} completed · {active.length} active
+              </p>
+            </Card>
+            <Card>
+              <p className="text-xs uppercase tracking-wide text-eat-muted">Completed payouts</p>
+              <p className="mt-1 text-2xl font-bold text-eat-blue">{formatMoney(completedEarnings)}</p>
+            </Card>
+            <Card>
+              <p className="text-xs uppercase tracking-wide text-eat-muted">Available runs</p>
+              <p className="mt-1 text-2xl font-bold text-eat-ink">
+                {deliveries.filter((d) => d.status === "available").length}
+              </p>
+            </Card>
+          </div>
+
+          <h2 className="mt-10 text-xl font-bold text-eat-ink">Available deliveries</h2>
           <div className="mt-4 space-y-4">
             {active.length === 0 ? (
               <Card>

@@ -3,7 +3,26 @@
  *
  * Stripe: see src/lib/stripe/README.md for architecture, OSS references, and setup.
  * Supabase: planned for orders, auth, and real-time status.
+ * OSS UX: see docs/OSS_INTEGRATION.md for Grub/UberEatsClone pattern ports.
  */
+
+export const OSS_INTEGRATIONS = {
+  uberEatsCloneGrub: {
+    repo: "https://github.com/sergeyCodenameOne/UberEatsClone",
+    license: "Apache-2.0",
+    stack: "Codename One (Java) — UX patterns only, not runtime code",
+    adoptedIn: [
+      "src/components/order/MenuCategoryNav.tsx",
+      "src/lib/menu-categories.ts",
+      "src/lib/cuisine-filters.ts",
+      "src/components/order/OrderBrowse.tsx",
+      "src/components/order/PopularNearYou.tsx",
+      "src/components/order/OrderTracker.tsx",
+      "src/lib/order-tracking.ts",
+    ],
+    doc: "docs/OSS_INTEGRATION.md",
+  },
+} as const;
 
 export const INTEGRATION_NOTES = {
   supabase: [

@@ -3,26 +3,35 @@
 import { useMemo, useState } from "react";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { FloatingCartFAB } from "@/components/order/FloatingCartFAB";
+import { PopularNearYou } from "@/components/order/PopularNearYou";
 import { RestaurantCard } from "@/components/order/RestaurantCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getRestaurantsByZone, restaurants } from "@/data/restaurants";
 import { deliveryZones, type DeliveryZoneId } from "@/data/zones";
+import {
+  getCuisineFilters,
+  restaurantMatchesCuisine,
+} from "@/lib/cuisine-filters";
+
+const cuisineFilters = getCuisineFilters();
 
 export function OrderBrowse() {
   const [activeZone, setActiveZone] = useState<DeliveryZoneId | "all">("all");
+  const [activeCuisine, setActiveCuisine] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
   const filteredRestaurants = useMemo(() => {
     const query = search.trim().toLowerCase();
     return restaurants.filter((r) => {
       const zoneMatch = activeZone === "all" || r.zone === activeZone;
+      const cuisineMatch = restaurantMatchesCuisine(r.foodType, activeCuisine);
       const searchMatch =
         !query ||
         r.name.toLowerCase().includes(query) ||
         r.foodType.toLowerCase().includes(query);
-      return zoneMatch && searchMatch;
+      return zoneMatch && cuisineMatch && searchMatch;
     });
-  }, [activeZone, search]);
+  }, [activeZone, activeCuisine, search]);
 
   const zonesToShow =
     activeZone === "all"
@@ -47,6 +56,12 @@ export function OrderBrowse() {
           <p className="mt-4 text-sm text-eat-muted">
             {restaurants.length} local restaurants within ~10 miles — real photos where available.
           </p>
+        </div>
+      </section>
+
+      <section className="border-b border-eat-border bg-white py-6">
+        <div className="mx-auto max-w-6xl px-4">
+          <PopularNearYou limit={6} compact />
         </div>
       </section>
 
@@ -92,11 +107,33 @@ export function OrderBrowse() {
               );
             })}
           </div>
+          {/* Cuisine chips — Grub FilterView pattern */}
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+            <FilterChip
+              label="All cuisines"
+              active={activeCuisine === null}
+              onClick={() => setActiveCuisine(null)}
+            />
+            {cuisineFilters.map(({ label, match }) => (
+              <FilterChip
+                key={match}
+                label={label}
+                active={activeCuisine === match}
+                onClick={() =>
+                  setActiveCuisine((prev) => (prev === match ? null : match))
+                }
+              />
+            ))}
+          </div>
         </div>
       </div>
 
       <section className="eat-section pt-6 space-y-12">
         <div className="mx-auto max-w-6xl px-4 space-y-12">
+          {activeZone === "all" && !search && !activeCuisine && (
+            <PopularNearYou compact />
+          )}
+
           {filteredRestaurants.length === 0 ? (
             <div className="py-12 text-center">
               <p className="text-lg font-semibold text-eat-ink">No restaurants found</p>
@@ -104,7 +141,7 @@ export function OrderBrowse() {
                 Try a different search or zone filter.
               </p>
             </div>
-          ) : activeZone === "all" && !search ? (
+          ) : activeZone === "all" && !search && !activeCuisine ? (
             zonesToShow.map((zone) => {
               const zoneRestaurants = getRestaurantsByZone(zone.id);
               if (zoneRestaurants.length === 0) return null;
@@ -134,6 +171,30 @@ export function OrderBrowse() {
 
       <FloatingCartFAB />
     </>
+  );
+}
+
+function FilterChip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`tap-target shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition ${
+        active
+          ? "bg-eat-red text-white shadow-sm"
+          : "border border-eat-border bg-eat-soft text-eat-ink hover:border-eat-red/40"
+      }`}
+    >
+      {label}
+    </button>
   );
 }
 

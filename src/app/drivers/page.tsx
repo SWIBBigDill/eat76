@@ -4,6 +4,8 @@ import { PageShell } from "@/components/layout/PageShell";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FaqAccordion } from "@/components/ui/FaqAccordion";
+import { driverFaqs } from "@/data/faqs";
 
 export default function DriversPage() {
   return (
@@ -42,6 +44,26 @@ export default function DriversPage() {
       <section className="eat-section bg-eat-soft">
         <div className="mx-auto max-w-6xl px-4">
           <SectionHeading centered title="Sample driver pay" />
+          <div className="mx-auto mt-8 max-w-md">
+            <div className="rounded-2xl border border-eat-border bg-white p-6">
+              <p className="text-center text-sm font-semibold text-eat-muted">Example delivery payout</p>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between rounded-xl bg-eat-soft px-4 py-3">
+                  <span className="text-sm text-eat-muted">Base pay</span>
+                  <span className="font-bold text-eat-blue">$6.76</span>
+                </div>
+                <div className="flex justify-center text-eat-muted">+</div>
+                <div className="flex items-center justify-between rounded-xl bg-eat-soft px-4 py-3">
+                  <span className="text-sm text-eat-muted">Customer tip (100%)</span>
+                  <span className="font-bold text-eat-red">$4.00</span>
+                </div>
+                <div className="border-t border-eat-border pt-3 flex items-center justify-between">
+                  <span className="font-semibold text-eat-ink">You earn</span>
+                  <span className="text-2xl font-bold text-eat-red">$10.76</span>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3 max-w-4xl mx-auto">
             <Card className="text-center">
               <p className="text-xs uppercase tracking-wide text-eat-muted">Base delivery pay</p>
@@ -62,6 +84,13 @@ export default function DriversPage() {
           <p className="mx-auto mt-6 max-w-2xl text-center text-sm text-eat-muted">
             Example payout: $6.76 base + $4.00 tip = $10.76 for one delivery. No mystery adjustments.
           </p>
+        </div>
+      </section>
+
+      <section className="eat-section bg-eat-soft">
+        <div className="mx-auto max-w-3xl px-4">
+          <SectionHeading centered title="Driver FAQ" />
+          <FaqAccordion items={driverFaqs} className="mt-8" />
         </div>
       </section>
 
