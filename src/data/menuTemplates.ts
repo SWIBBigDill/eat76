@@ -40,7 +40,7 @@ export const cuisineTemplates: Record<CuisineKey, MenuTemplateItem[]> = {
     { name: "Tiramisu", description: "Espresso-soaked ladyfingers, mascarpone.", basePrice: 9 },
   ],
   mexican: [
-    { name: "Street Taco Trio", description: "Three tacos — carnitas, chicken, or veggie.", basePrice: 12 },
+    { name: "Street Taco Trio", description: "Three tacos: carnitas, chicken, or veggie.", basePrice: 12 },
     { name: "Burrito Bowl", description: "Rice, beans, salsa, guac, protein.", basePrice: 13.5 },
     { name: "Chips & Guacamole", description: "Fresh guac, house tortilla chips.", basePrice: 7 },
     { name: "Quesadilla", description: "Flour tortilla, cheese, pico, sour cream.", basePrice: 10.5 },

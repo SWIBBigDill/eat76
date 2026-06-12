@@ -144,7 +144,7 @@ export function getRestaurantPricingTier(monthlyOrderCount: number) {
     return {
       tier: 1 as const,
       rate: RESTAURANT_TIER1_RATE,
-      label: "17.76% (orders 1–150)",
+      label: "17.76% (orders 1-150)",
       ordersUntilTier2: RESTAURANT_TIER1_LIMIT - monthlyOrderCount,
     };
   }

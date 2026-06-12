@@ -24,7 +24,7 @@ export default async function OrderCancelPage({ searchParams }: Props) {
           </div>
           <h1 className="mt-4 text-2xl font-bold text-eat-ink">Checkout cancelled</h1>
           <p className="mt-3 text-eat-muted">
-            No charge was made. Your cart items are still saved — pick up where you left off.
+            No charge was made. Your cart items are still saved. Pick up where you left off.
           </p>
           <div className="mt-8 flex flex-col gap-3">
             {restaurant ? (

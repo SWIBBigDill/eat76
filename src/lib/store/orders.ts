@@ -1,6 +1,8 @@
+import { MOCK_DRIVER } from "@/lib/driver-location";
+import type { OrderTrackStatus } from "@/lib/order-tracking";
 import { readJsonFile, writeJsonFile } from "./file-store";
 
-// Swap to Supabase: await supabase.from('orders').insert(order)
+export type DriverLocation = { lat: number; lng: number };
 
 export type StoredOrder = {
   id: string;
@@ -14,12 +16,23 @@ export type StoredOrder = {
   tip: number;
   total: number;
   savings?: number;
-  status: "placed" | "preparing" | "out_for_delivery" | "delivered";
+  status: OrderTrackStatus;
   placedAt: string;
   source: "demo" | "stripe";
+  deliveryAddress?: string;
+  driver?: {
+    id: string;
+    name: string;
+    vehicle: string;
+    initials: string;
+  };
+  driverLocation?: DriverLocation;
+  minutesAway?: number;
 };
 
 const ORDERS_FILE = "orders.json";
+
+const DEFAULT_DELIVERY = "123 E State St, Kennett Square, PA 19348";
 
 export async function getOrders(): Promise<StoredOrder[]> {
   return readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
@@ -30,28 +43,51 @@ export async function getOrderById(id: string): Promise<StoredOrder | null> {
   return orders.find((o) => o.id === id) ?? null;
 }
 
-export async function saveOrder(order: StoredOrder): Promise<StoredOrder> {
-  const orders = await getOrders();
-  const existing = orders.findIndex((o) => o.id === order.id);
-  if (existing >= 0) {
-    orders[existing] = order;
-  } else {
-    orders.unshift(order);
-  }
-  await writeJsonFile(ORDERS_FILE, orders.slice(0, 500));
-  return order;
+function withDriverDefaults(order: StoredOrder): StoredOrder {
+  return {
+    ...order,
+    deliveryAddress: order.deliveryAddress ?? DEFAULT_DELIVERY,
+    driver: order.driver ?? {
+      id: MOCK_DRIVER.id,
+      name: MOCK_DRIVER.name,
+      vehicle: MOCK_DRIVER.vehicle,
+      initials: MOCK_DRIVER.initials,
+    },
+    driverLocation: order.driverLocation ?? { lat: 39.8478, lng: -75.7075 },
+    minutesAway: order.minutesAway ?? 5,
+  };
 }
 
-export async function updateOrderStatus(
+export async function saveOrder(order: StoredOrder): Promise<StoredOrder> {
+  const orders = await getOrders();
+  const enriched = withDriverDefaults(order);
+  const existing = orders.findIndex((o) => o.id === order.id);
+  if (existing >= 0) {
+    orders[existing] = { ...orders[existing], ...enriched };
+  } else {
+    orders.unshift(enriched);
+  }
+  await writeJsonFile(ORDERS_FILE, orders.slice(0, 500));
+  return enriched;
+}
+
+export async function updateOrder(
   id: string,
-  status: StoredOrder["status"]
+  patch: Partial<StoredOrder>
 ): Promise<StoredOrder | null> {
   const orders = await getOrders();
   const idx = orders.findIndex((o) => o.id === id);
   if (idx < 0) return null;
-  orders[idx] = { ...orders[idx], status };
+  orders[idx] = withDriverDefaults({ ...orders[idx], ...patch });
   await writeJsonFile(ORDERS_FILE, orders);
   return orders[idx];
+}
+
+export async function updateOrderStatus(
+  id: string,
+  status: OrderTrackStatus
+): Promise<StoredOrder | null> {
+  return updateOrder(id, { status });
 }
 
 export function orderFromStripeSession(params: {
@@ -63,7 +99,7 @@ export function orderFromStripeSession(params: {
     params.metadata.order_id ??
     `E76-${params.sessionId.slice(-8).toUpperCase()}`;
 
-  return {
+  return withDriverDefaults({
     id,
     sessionId: params.sessionId,
     restaurantId: params.metadata.restaurant_id ?? "unknown",
@@ -77,5 +113,5 @@ export function orderFromStripeSession(params: {
     status: "placed",
     placedAt: new Date().toISOString(),
     source: "stripe",
-  };
+  });
 }

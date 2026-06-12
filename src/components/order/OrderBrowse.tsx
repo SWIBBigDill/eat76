@@ -48,13 +48,13 @@ export function OrderBrowse() {
           <SectionHeading
             className="mt-3"
             title="Order local near 19348"
-            subtitle="Browse Kennett Square favorites. $1.76 service + $4.76 delivery — every fee shown before checkout."
+            subtitle="Browse Kennett Square favorites. $1.76 service + $4.76 delivery. Every fee shown before checkout."
           />
           <div className="mt-5 max-w-md">
             <CheckoutSavings foodSubtotal={28} tip={4} compact />
           </div>
           <p className="mt-4 text-sm text-eat-muted">
-            {restaurants.length} local restaurants within ~10 miles — real photos where available.
+            {restaurants.length} local restaurants within ~10 miles. Real photos where available.
           </p>
         </div>
       </section>

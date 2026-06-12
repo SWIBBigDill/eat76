@@ -14,7 +14,7 @@ export const restaurantFaqs: FaqItem[] = [
   {
     question: "Can I keep my existing delivery apps?",
     answer:
-      "Many partners run Eat76 alongside other channels during launch. You own your customer relationship and menu on Eat76 — we don't mark up your prices.",
+      "Many partners run Eat76 alongside other channels during launch. You own your customer relationship and menu on Eat76. We don't mark up your prices.",
   },
   {
     question: "How fast can we go live in 19348?",
@@ -27,7 +27,7 @@ export const driverFaqs: FaqItem[] = [
   {
     question: "How much do drivers earn per delivery?",
     answer:
-      "$6.76 minimum base pay per delivery plus 100% of customer tips. Peak bonuses and longer-zone runs may add on top — shown before you claim.",
+      "$6.76 minimum base pay per delivery plus 100% of customer tips. Peak bonuses and longer-zone runs may add on top, shown before you claim.",
   },
   {
     question: "Is this full-time or flexible?",
@@ -37,7 +37,7 @@ export const driverFaqs: FaqItem[] = [
   {
     question: "What do I need to apply?",
     answer:
-      "Valid license, insured vehicle, smartphone, and familiarity with Kennett Square / 19348 area. Submit the apply form — we'll reach out for onboarding.",
+      "Valid license, insured vehicle, smartphone, and familiarity with Kennett Square / 19348 area. Submit the apply form and we'll reach out for onboarding.",
   },
   {
     question: "When do drivers get paid?",

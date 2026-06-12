@@ -9,7 +9,7 @@ export function LaunchLocalSection() {
           Kennett Square and surrounding area
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-eat-muted">
-          We&apos;re not building a national marketplace. We&apos;re building density in one ZIP first — better routes for drivers, better support for restaurants, better deals for neighbors.
+          We&apos;re not building a national marketplace. We&apos;re building density in one ZIP first. Better routes for drivers, better support for restaurants, better deals for neighbors.
         </p>
         <div className="mx-auto mt-8 flex max-w-md flex-wrap items-center justify-center gap-4 text-sm">
           <div className="rounded-2xl border border-eat-border bg-white px-5 py-3 shadow-sm">

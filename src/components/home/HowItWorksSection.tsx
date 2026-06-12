@@ -41,7 +41,7 @@ export function HowItWorksSection() {
         <SectionHeading
           centered
           title="How ordering works"
-          subtitle="Three simple steps — built for hungry neighbors, not corporate dashboards."
+          subtitle="Three simple steps. Built for hungry neighbors, not corporate dashboards."
         />
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {steps.map((item) => (

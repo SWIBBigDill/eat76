@@ -6,13 +6,13 @@ const fees = [
   {
     label: "Service fee",
     value: "$1.76",
-    detail: "Flat on every order — no percentage surprises",
+    detail: "Flat on every order. No percentage surprises.",
     accent: "text-eat-blue",
   },
   {
     label: "Delivery fee",
     value: "$4.76",
-    detail: "Core zone (19348) — clear before checkout",
+    detail: "Core zone (19348). Clear before checkout.",
     accent: "text-eat-blue",
   },
   {

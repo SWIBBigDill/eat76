@@ -70,14 +70,14 @@ export function CartPanel() {
         const data = (await response.json()) as { url?: string; error?: string };
 
         if (response.status === 503 || !response.ok || !data.url) {
-          setCheckoutError(data.error ?? "Stripe unavailable — using demo checkout.");
+          setCheckoutError(data.error ?? "Stripe unavailable. Using demo checkout.");
           placeDemoOrder();
           return;
         }
 
         redirectToUrl(data.url);
       } catch {
-        setCheckoutError("Network error — placing demo order instead.");
+        setCheckoutError("Network error. Placing demo order instead.");
         placeDemoOrder();
       } finally {
         setCheckoutLoading(false);

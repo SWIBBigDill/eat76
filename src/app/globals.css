@@ -61,6 +61,10 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -108,6 +112,11 @@ body {
   50% { opacity: 0.7; transform: scale(1.05); }
 }
 
+@keyframes pulse-soft {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(237, 23, 76, 0.35); }
+  50% { box-shadow: 0 0 0 6px rgba(237, 23, 76, 0); }
+}
+
 @keyframes success-pop {
   0% {
     opacity: 0;
@@ -148,6 +157,10 @@ body {
 
 .animate-success-pop {
   animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

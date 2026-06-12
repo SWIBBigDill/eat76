@@ -81,7 +81,7 @@ export function AdminProjectionsCalculator() {
           onChange={(e) => setAverageOrderValue(Number(e.target.value))}
         />
         <Input
-          label="Month number (1–12)"
+          label="Month number (1-12)"
           type="number"
           min={1}
           max={12}
@@ -117,7 +117,7 @@ export function AdminProjectionsCalculator() {
           {revenueBreakdown.map((item) => (
             <ProgressBar
               key={item.label}
-              label={`${item.label} — ${formatMoney(item.value)}`}
+              label={`${item.label}: ${formatMoney(item.value)}`}
               value={item.value}
               max={results.grossPlatformRevenue}
               color="blue"

@@ -50,7 +50,7 @@ export function StripeConnectOnboardButton({
 
       window.location.href = data.url;
     } catch {
-      setMessage("Network error — check your connection and try again.");
+      setMessage("Network error. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ export function StripeConnectOnboardButton({
       </Button>
       {!stripeReady && !message && (
         <p className="mt-2 text-xs text-eat-muted">
-          Demo mode — Stripe keys not detected. Checkout and payouts stay simulated until keys are added.
+          Demo mode. Stripe keys not detected. Checkout and payouts stay simulated until keys are added.
         </p>
       )}
       {message && (

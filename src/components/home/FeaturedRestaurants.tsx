@@ -19,7 +19,7 @@ export function FeaturedRestaurants() {
         <SectionHeading
           centered
           title="Browse local restaurants"
-          subtitle="Top-rated spots in Kennett Square — real menus, real photos, delivered by neighbors who know the area."
+          subtitle="Top-rated spots in Kennett Square. Real menus, real photos, delivered by neighbors who know the area."
         />
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

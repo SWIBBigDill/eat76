@@ -21,7 +21,7 @@ export function PopularNearYou({ limit = 8, compact }: PopularNearYouProps) {
     <div className={compact ? "space-y-4" : "space-y-6"}>
       <div>
         <h2 className="text-lg font-bold text-eat-ink sm:text-xl">Popular near you</h2>
-        <p className="text-sm text-eat-muted">Top-rated in Kennett Square — order in a tap</p>
+        <p className="text-sm text-eat-muted">Top-rated in Kennett Square. Order in a tap.</p>
       </div>
       <div
         className={

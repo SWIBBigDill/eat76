@@ -100,7 +100,7 @@ export default function DriversPage() {
             <div>
               <SectionHeading
                 title="One market at a time"
-                subtitle="We're launching in ZIP 19348 — Kennett Square and surrounding area. Local drivers who build density here will have the advantage when we expand."
+                subtitle="We're launching in ZIP 19348, Kennett Square and surrounding area. Local drivers who build density here will have the advantage when we expand."
               />
               <Button href="/driver-dashboard" variant="accent" className="mt-6">
                 Driver Dashboard Demo

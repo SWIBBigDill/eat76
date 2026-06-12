@@ -25,7 +25,7 @@ export default function PricingPage() {
           <SectionHeading
             centered
             title="Transparent pricing"
-            subtitle="No mystery fees. Customers see every charge upfront — partners get honest rates too."
+            subtitle="No mystery fees. Customers see every charge upfront. Partners get honest rates too."
           />
         </div>
       </section>
@@ -59,7 +59,7 @@ export default function PricingPage() {
                       <span className="mt-0.5 font-bold text-eat-blue">$1.76</span>
                       <div>
                         <p className="font-semibold">Flat service fee</p>
-                        <p className="text-eat-muted">Same on every order — no percentage surprises.</p>
+                        <p className="text-eat-muted">Same on every order. No percentage surprises.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
@@ -98,8 +98,8 @@ export default function PricingPage() {
                   <h3 className="text-lg font-bold text-eat-blue">Restaurant partners</h3>
                   <ul className="mt-4 space-y-2 text-sm text-eat-ink">
                     <li>No monthly fee during launch</li>
-                    <li>17.76% platform fee — orders 1–150 / month</li>
-                    <li>12% platform fee — orders 151+ / month</li>
+                    <li>17.76% platform fee, orders 1-150 / month</li>
+                    <li>12% platform fee, orders 151+ / month</li>
                     <li>Optional $76/mo premium only with added services</li>
                   </ul>
                   <Button href="/restaurants" className="mt-6 w-full" variant="outline">

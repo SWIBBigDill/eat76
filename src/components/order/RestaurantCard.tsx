@@ -16,7 +16,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
         <div className="relative h-44 w-full overflow-hidden bg-eat-soft sm:h-48">
           <Image
             src={imageSrc}
-            alt={`${restaurant.name} — local restaurant in ${restaurant.zip}`}
+            alt={`${restaurant.name}, local restaurant in ${restaurant.zip}`}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

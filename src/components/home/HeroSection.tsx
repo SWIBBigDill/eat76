@@ -25,7 +25,7 @@ export function HeroSection() {
           </h1>
           <p className="mt-4 max-w-xl text-lg text-eat-muted md:text-xl animate-fade-in-up">
             Hungry for something good nearby? Browse Kennett Square favorites
-            with transparent fees — no mystery checkout pile-on.
+            with transparent fees. No mystery checkout pile-on.
           </p>
 
           <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center animate-fade-in-up">

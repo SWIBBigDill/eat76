@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { OrderTracker } from "@/components/order/OrderTracker";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { loadPlacedOrder, type PlacedOrder } from "@/context/CartContext";
+import { useOrderTracking } from "@/hooks/useOrderTracking";
+import { getShareUrl } from "@/lib/order-tracking";
 
 function formatMoney(value: number) {
   return `$${value.toFixed(2)}`;
@@ -15,6 +17,19 @@ function formatMoney(value: number) {
 
 export default function OrderConfirmationPage() {
   const [order] = useState<PlacedOrder | null>(() => loadPlacedOrder());
+  const { order: tracked } = useOrderTracking(order);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  const copyShareLink = useCallback(async () => {
+    if (!order) return;
+    try {
+      await navigator.clipboard.writeText(getShareUrl(order.id));
+      setShareCopied(true);
+      window.setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      /* ignore */
+    }
+  }, [order]);
 
   if (!order) {
     return (
@@ -40,6 +55,8 @@ export default function OrderConfirmationPage() {
     minute: "2-digit",
   });
 
+  const status = tracked?.status ?? "placed";
+
   return (
     <PageShell className="pb-20 md:pb-0">
       <section className="eat-section">
@@ -60,19 +77,28 @@ export default function OrderConfirmationPage() {
           </div>
 
           <Card className="mt-8">
-            <p className="text-sm font-semibold text-eat-ink">Live tracking (demo)</p>
+            <p className="text-sm font-semibold text-eat-ink">Live tracking</p>
             <p className="mt-1 text-xs text-eat-muted">
-              Status advances automatically — pattern from Grub order progress UI.
+              Status updates automatically in demo mode.
             </p>
             <div className="mt-4">
-              <OrderTracker placedAt={order.placedAt} />
+              <OrderTracker status={status} compact />
             </div>
-            <Link
-              href={`/order/track/${order.id}`}
-              className="mt-4 inline-flex text-sm font-semibold text-eat-blue hover:underline"
-            >
-              Open full tracking view →
-            </Link>
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <Link
+                href={`/order/track/${order.id}`}
+                className="text-sm font-semibold text-eat-blue hover:underline"
+              >
+                Open full tracking view →
+              </Link>
+              <button
+                type="button"
+                onClick={() => void copyShareLink()}
+                className="text-sm font-semibold text-eat-muted hover:text-eat-blue"
+              >
+                {shareCopied ? "Link copied!" : "Copy share link"}
+              </button>
+            </div>
           </Card>
 
           <Card className="mt-6">
@@ -124,18 +150,12 @@ export default function OrderConfirmationPage() {
 
           <div className="mt-8 flex flex-col gap-3">
             <Button href={`/order/track/${order.id}`}>Track order</Button>
-            <Button href="/order" variant="outline">
+            <Button href={`/order/${order.restaurantId}`} variant="outline">
               Order again
             </Button>
             <Button href="/" variant="ghost">
               Back to home
             </Button>
-            <Link
-              href={`/order/${order.restaurantId}`}
-              className="text-center text-sm font-semibold text-eat-blue"
-            >
-              Return to {order.restaurantName}
-            </Link>
           </div>
         </div>
       </section>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { MockLoginBanner } from "@/components/ui/MockLoginBanner";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { initialOrders } from "@/data/orders";
+import { restaurantStatusToTrack } from "@/lib/order-tracking";
 import {
   calculateRestaurantPlatformFee,
   DEFAULT_COMPETITOR_RATE,
@@ -14,6 +15,15 @@ import {
   RESTAURANT_TIER1_LIMIT,
 } from "@/lib/pricing";
 import type { Order, OrderStatus } from "@/lib/types";
+
+function syncOrderToApi(orderId: string, status: OrderStatus) {
+  const trackStatus = restaurantStatusToTrack(status);
+  void fetch(`/api/orders/${orderId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: trackStatus }),
+  }).catch(() => undefined);
+}
 
 const STATUS_FLOW: OrderStatus[] = [
   "incoming",
@@ -58,24 +68,27 @@ export default function RestaurantDashboardPage() {
     return orders.filter((o) => o.status === statusFilter);
   }, [orders, statusFilter]);
 
-  const advanceStatus = (orderId: string) => {
+  const advanceStatus = useCallback((orderId: string) => {
     setOrders((prev) =>
       prev.map((order) => {
         if (order.id !== orderId) return order;
         const idx = STATUS_FLOW.indexOf(order.status);
         if (idx < STATUS_FLOW.length - 1) {
-          return { ...order, status: STATUS_FLOW[idx + 1] };
+          const next = STATUS_FLOW[idx + 1];
+          syncOrderToApi(orderId, next);
+          return { ...order, status: next };
         }
         return order;
       })
     );
-  };
+  }, []);
 
-  const acceptOrder = (orderId: string) => {
+  const acceptOrder = useCallback((orderId: string) => {
+    syncOrderToApi(orderId, "accepted");
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? { ...o, status: "accepted" } : o))
     );
-  };
+  }, []);
 
   const filterChips: { id: StatusFilter; label: string }[] = [
     { id: "active", label: "Active" },
@@ -120,7 +133,7 @@ export default function RestaurantDashboardPage() {
           <Card className="mt-6">
             <h3 className="font-bold text-eat-ink">Current pricing tier</h3>
             <p className="mt-1 text-sm text-eat-muted">
-              {tier.label} — {monthlyOrderCount} of {RESTAURANT_TIER1_LIMIT} orders in tier 1
+              {tier.label}: {monthlyOrderCount} of {RESTAURANT_TIER1_LIMIT} orders in tier 1
             </p>
             <div className="mt-4">
               <ProgressBar
@@ -136,11 +149,11 @@ export default function RestaurantDashboardPage() {
               </p>
             ) : (
               <p className="mt-2 text-sm font-semibold text-eat-blue">
-                Volume tier active — 12% rate for remaining orders this month.
+                Volume tier active. 12% rate for remaining orders this month.
               </p>
             )}
             <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
-              <p>Orders 1–150: <strong>17.76%</strong></p>
+              <p>Orders 1-150: <strong>17.76%</strong></p>
               <p>Orders 151+: <strong>12%</strong></p>
             </div>
           </Card>
@@ -180,7 +193,7 @@ export default function RestaurantDashboardPage() {
                       <ul className="mt-2 text-sm text-eat-ink">
                         {order.items.map((item, i) => (
                           <li key={i}>
-                            {item.quantity}× {item.name} — {formatMoney(item.price * item.quantity)}
+                            {item.quantity}× {item.name} · {formatMoney(item.price * item.quantity)}
                           </li>
                         ))}
                       </ul>

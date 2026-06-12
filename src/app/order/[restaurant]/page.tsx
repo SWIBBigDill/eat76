@@ -60,7 +60,7 @@ export default function RestaurantMenuPage() {
         <div className="relative h-48 w-full bg-eat-soft sm:h-56 md:h-64">
           <Image
             src={imageSrc}
-            alt={`${restaurant.name} — local restaurant`}
+            alt={`${restaurant.name}, local restaurant`}
             fill
             className="object-cover"
             sizes="100vw"

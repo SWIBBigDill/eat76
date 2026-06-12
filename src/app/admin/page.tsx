@@ -78,7 +78,7 @@ export default function AdminPage() {
                 {revenueItems.map((item) => (
                   <ProgressBar
                     key={item.label}
-                    label={`${item.label} — ${formatMoney(item.value)}`}
+                    label={`${item.label}: ${formatMoney(item.value)}`}
                     value={item.value}
                     max={stats.platformRevenue}
                     color={item.label === "Contribution" ? "red" : "blue"}

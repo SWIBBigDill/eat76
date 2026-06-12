@@ -23,7 +23,7 @@ export default function RestaurantsPage() {
             subtitle="Own your customers. Work with a local delivery partner that actually knows 19348."
           />
           <p className="mt-4 max-w-3xl text-sm text-eat-muted">
-            During launch, restaurants pay only when orders come in — 17.76% for the first 150 monthly orders, then 12% after that.
+            During launch, restaurants pay only when orders come in. 17.76% for the first 150 monthly orders, then 12% after that.
           </p>
         </div>
       </section>
@@ -44,7 +44,7 @@ export default function RestaurantsPage() {
                 <li className="flex gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eat-red text-sm font-bold text-white">%</span>
                   <div>
-                    <p className="font-semibold text-eat-ink">17.76% on orders 1–150 / month</p>
+                    <p className="font-semibold text-eat-ink">17.76% on orders 1-150 / month</p>
                     <p className="text-sm text-eat-muted">Platform fee on food sales for your first 150 delivery orders each month.</p>
                   </div>
                 </li>
@@ -52,7 +52,7 @@ export default function RestaurantsPage() {
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-eat-blue text-sm font-bold text-white">↓</span>
                   <div>
                     <p className="font-semibold text-eat-ink">12% on orders 151+ / month</p>
-                    <p className="text-sm text-eat-muted">Volume reward — your rate drops for the rest of the month.</p>
+                    <p className="text-sm text-eat-muted">Volume reward. Your rate drops for the rest of the month.</p>
                   </div>
                 </li>
               </ul>
@@ -61,7 +61,7 @@ export default function RestaurantsPage() {
             <Card padding="lg" className="border-eat-blue/20">
               <h3 className="text-xl font-bold text-eat-ink">Optional future premium</h3>
               <p className="mt-4 text-sm text-eat-muted leading-relaxed">
-                A $76/month premium plan may be offered later — only if it includes real added services like marketing support, menu management, featured placement, catering tools, or analytics. It will never be required just to receive orders.
+                A $76/month premium plan may be offered later, only if it includes real added services like marketing support, menu management, featured placement, catering tools, or analytics. It will never be required just to receive orders.
               </p>
               <p className="mt-4 text-sm font-medium text-eat-blue">
                 No monthly fee during launch. Pay only when orders come in.

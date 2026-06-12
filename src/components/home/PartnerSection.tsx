@@ -22,7 +22,7 @@ export function PartnerSection() {
         <SectionHeading
           centered
           title="Get early access"
-          subtitle="Join the customer waitlist first — we'll reach out when Eat76 goes live in your ZIP."
+          subtitle="Join the customer waitlist first. We'll reach out when Eat76 goes live in your ZIP."
         />
 
         <div className="mx-auto mt-8 flex max-w-lg flex-wrap justify-center gap-2">

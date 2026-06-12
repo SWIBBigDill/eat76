@@ -11,13 +11,13 @@ const geistSans = Geist({
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://eat76.vercel.app";
 
 export const metadata: Metadata = {
-  title: "Eat76 — Freedom from big delivery",
+  title: "Eat76 | Freedom from big delivery",
   description:
     "Local-first food delivery for 19348. Independent restaurants, local drivers, transparent fees.",
   metadataBase: new URL(appUrl),
   manifest: "/manifest.json",
   openGraph: {
-    title: "Eat76 — Order local near 19348",
+    title: "Eat76 | Order local near 19348",
     description:
       "75+ local restaurants. $1.76 service + $4.76 delivery. Save vs big delivery apps.",
     url: appUrl,
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Eat76 — Local food delivery",
+    title: "Eat76 | Local food delivery",
     description: "Order local in Kennett Square. Transparent fees, local drivers.",
     images: ["/logo.svg"],
   },

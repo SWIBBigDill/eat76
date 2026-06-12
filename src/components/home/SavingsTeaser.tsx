@@ -14,7 +14,7 @@ export function SavingsTeaser() {
         <SectionHeading
           centered
           title="See what you save"
-          subtitle="On a typical $28 order, Eat76 beats the big apps — same food, fewer fees, no menu markup."
+          subtitle="On a typical $28 order, Eat76 beats the big apps. Same food, fewer fees, no menu markup."
         />
         <div className="mx-auto mt-8 max-w-2xl">
           <CheckoutSavings foodSubtotal={SAMPLE_FOOD} tip={SAMPLE_TIP} />

@@ -16,7 +16,7 @@ export const deliveryZones: DeliveryZone[] = [
   {
     id: "kennett-square",
     label: "Kennett Square / 19348",
-    subtitle: "Core launch zone — downtown & surrounding",
+    subtitle: "Core launch zone. Downtown and surrounding.",
     zip: "19348",
   },
   {
