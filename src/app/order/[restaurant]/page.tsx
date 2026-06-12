@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
@@ -39,26 +40,63 @@ export default function RestaurantMenuPage() {
     );
   }
 
+  const heroSrc =
+    restaurant.image ?? `/restaurants/${restaurant.id}/hero.svg`;
+
   return (
     <PageShell className="pb-28 lg:pb-8">
-      <section className="eat-section bg-eat-soft">
-        <div className="mx-auto max-w-6xl px-4">
-          <Link href="/order" className="text-sm font-semibold text-eat-blue">
-            ← All restaurants
-          </Link>
-          <h1 className="mt-2 text-3xl font-bold text-eat-ink">{restaurant.name}</h1>
-          <p className="mt-1 text-eat-muted">
-            {restaurant.foodType} · {restaurant.distance} · {restaurant.deliveryTime}
-          </p>
+      <section className="relative bg-eat-soft">
+        <div className="relative mx-auto max-w-6xl">
+          <div className="relative h-48 w-full sm:h-56 md:h-64">
+            <Image
+              src={heroSrc}
+              alt={`${restaurant.name} — ${restaurant.foodType}`}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          </div>
+          <div className="absolute inset-x-0 bottom-0 mx-auto max-w-6xl px-4 pb-5">
+            <Link href="/order" className="text-sm font-semibold text-white/90 hover:text-white">
+              ← All restaurants
+            </Link>
+            <h1 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
+              {restaurant.name}
+            </h1>
+            <p className="mt-1 text-sm text-white/90">
+              {restaurant.foodType} · {restaurant.distance} · {restaurant.deliveryTime}
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="eat-section pt-0">
+      <section className="eat-section pt-4">
         <div className="mx-auto max-w-6xl px-4">
+          <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-eat-muted">
+            <span>{restaurant.address}</span>
+            {restaurant.phone && <span>{restaurant.phone}</span>}
+            {restaurant.website && (
+              <a
+                href={restaurant.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-eat-blue hover:underline"
+              >
+                Restaurant website
+              </a>
+            )}
+          </div>
+
           <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
             <div className="space-y-3">
               {menu.map((item) => (
-                <MenuItemCard key={item.id} item={item} />
+                <MenuItemCard
+                  key={item.id}
+                  item={item}
+                  restaurantImage={heroSrc}
+                />
               ))}
             </div>
             <CartPanel />

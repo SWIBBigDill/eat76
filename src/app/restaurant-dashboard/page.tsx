@@ -70,7 +70,7 @@ export default function RestaurantDashboardPage() {
       <section className="eat-section bg-eat-soft">
         <div className="mx-auto max-w-6xl px-4">
           <h1 className="text-3xl font-bold text-eat-ink">Restaurant Dashboard</h1>
-          <p className="mt-2 text-eat-muted">Mushroom Bistro · 19348</p>
+          <p className="mt-2 text-eat-muted">Portabellos · 19348</p>
           <div className="mt-4">
             <MockLoginBanner role="restaurant" />
           </div>

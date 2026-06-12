@@ -1,11 +1,18 @@
+import type { DeliveryZoneId } from "@/data/zones";
+
 export type Restaurant = {
   id: string;
   name: string;
   foodType: string;
+  address: string;
+  phone?: string;
+  zone: DeliveryZoneId;
   distance: string;
   deliveryTime: string;
   rating: number;
   zip: string;
+  website?: string;
+  image?: string;
 };
 
 export type MenuItem = {
@@ -14,6 +21,7 @@ export type MenuItem = {
   name: string;
   description: string;
   price: number;
+  image?: string;
 };
 
 export type OrderStatus =

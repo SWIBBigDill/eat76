@@ -1,7 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { useCart } from "@/context/CartContext";
 
 const TIP_OPTIONS = [0, 2, 4, 6, 8];
@@ -23,9 +26,22 @@ export function CartPanel() {
     updateQuantity,
     clearCart,
     itemCount,
+    isCartOpen,
+    setCartOpen,
+    placeOrder,
   } = useCart();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (itemCount === 0) setCartOpen(false);
+  }, [itemCount, setCartOpen]);
 
   if (itemCount === 0) return null;
+
+  function handlePlaceOrder() {
+    const order = placeOrder();
+    if (order) router.push("/order/confirmation");
+  }
 
   return (
     <>
@@ -42,38 +58,63 @@ export function CartPanel() {
           setTip={setTip}
           updateQuantity={updateQuantity}
           clearCart={clearCart}
+          onPlaceOrder={handlePlaceOrder}
         />
       </Card>
 
-      {/* Mobile sticky bottom */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-eat-border bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:hidden">
-        <details className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between">
-            <div>
+      {/* Mobile collapsed bar */}
+      <div className="fixed inset-x-0 z-40 border-t border-eat-border bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:hidden bottom-[calc(3.5rem+env(safe-area-inset-bottom))]">
+        {!isCartOpen && (
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="flex w-full items-center justify-between gap-4 px-4 py-3.5 tap-target"
+          >
+            <div className="text-left">
               <p className="text-sm font-semibold text-eat-ink">
                 Cart · {itemCount} item{itemCount !== 1 ? "s" : ""}
               </p>
               <p className="text-lg font-bold text-eat-blue">{formatMoney(total)}</p>
             </div>
-            <span className="text-sm text-eat-muted group-open:rotate-180 transition">▼</span>
-          </summary>
-          <div className="mt-4 max-h-[50vh] overflow-y-auto">
-            <CartContent
-              items={items}
-              restaurantName={restaurantName}
-              subtotal={subtotal}
-              serviceFee={serviceFee}
-              deliveryFee={deliveryFee}
-              tip={tip}
-              total={total}
-              setTip={setTip}
-              updateQuantity={updateQuantity}
-              clearCart={clearCart}
-              compact
-            />
-          </div>
-        </details>
+            <span className="rounded-xl bg-eat-blue px-4 py-2 text-sm font-bold text-white">
+              View cart
+            </span>
+          </button>
+        )}
       </div>
+
+      {/* Mobile slide-up sheet */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40 animate-fade-in"
+            aria-label="Close cart"
+            onClick={() => setCartOpen(false)}
+          />
+          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] animate-slide-up rounded-t-3xl bg-white shadow-2xl safe-bottom">
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="h-1 w-10 rounded-full bg-eat-border" />
+            </div>
+            <div className="overflow-y-auto px-4 pb-6 max-h-[calc(85vh-2rem)]">
+              <CartContent
+                items={items}
+                restaurantName={restaurantName}
+                subtotal={subtotal}
+                serviceFee={serviceFee}
+                deliveryFee={deliveryFee}
+                tip={tip}
+                total={total}
+                setTip={setTip}
+                updateQuantity={updateQuantity}
+                clearCart={clearCart}
+                onPlaceOrder={handlePlaceOrder}
+                compact
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -89,6 +130,7 @@ type CartContentProps = {
   setTip: (tip: number) => void;
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
+  onPlaceOrder: () => void;
   compact?: boolean;
 };
 
@@ -103,10 +145,11 @@ function CartContent({
   setTip,
   updateQuantity,
   clearCart,
+  onPlaceOrder,
   compact,
 }: CartContentProps) {
   return (
-    <div className={compact ? "" : "space-y-4"}>
+    <div className={compact ? "space-y-4" : "space-y-4"}>
       {!compact && (
         <h3 className="text-lg font-bold text-eat-ink">Your cart</h3>
       )}
@@ -121,16 +164,18 @@ function CartContent({
             <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
-                className="h-7 w-7 rounded-lg border border-eat-border text-eat-blue"
+                className="tap-target h-9 w-9 rounded-xl border border-eat-border text-eat-blue transition active:bg-eat-soft"
                 onClick={() => updateQuantity(item.menuItemId, item.quantity - 1)}
+                aria-label={`Decrease ${item.name}`}
               >
                 −
               </button>
-              <span className="w-4 text-center">{item.quantity}</span>
+              <span className="w-5 text-center font-medium">{item.quantity}</span>
               <button
                 type="button"
-                className="h-7 w-7 rounded-lg border border-eat-border text-eat-blue"
+                className="tap-target h-9 w-9 rounded-xl border border-eat-border text-eat-blue transition active:bg-eat-soft"
                 onClick={() => updateQuantity(item.menuItemId, item.quantity + 1)}
+                aria-label={`Increase ${item.name}`}
               >
                 +
               </button>
@@ -165,7 +210,7 @@ function CartContent({
               key={amount}
               type="button"
               onClick={() => setTip(amount)}
-              className={`rounded-xl px-3 py-1.5 text-sm font-semibold transition ${
+              className={`tap-target rounded-xl px-4 py-2 text-sm font-semibold transition ${
                 tip === amount
                   ? "bg-eat-red text-white"
                   : "border border-eat-border text-eat-ink hover:bg-eat-soft"
@@ -178,6 +223,8 @@ function CartContent({
         <p className="mt-2 text-xs text-eat-muted">100% of tips go to your driver.</p>
       </div>
 
+      <CheckoutSavings foodSubtotal={subtotal} tip={tip} compact={compact} />
+
       <div className="flex justify-between border-t border-eat-border pt-3 text-base font-bold">
         <span>Total</span>
         <span className="text-eat-blue">{formatMoney(total)}</span>
@@ -187,11 +234,10 @@ function CartContent({
         Delivery supports local driver pay. Service keeps Eat76 operating locally. Tips go 100% to your driver.
       </p>
 
-      {/* TODO: Stripe Checkout integration */}
-      <Button className="w-full" onClick={() => alert("Demo only — payments coming soon.")}>
+      <Button className="w-full tap-target" onClick={onPlaceOrder}>
         Place Order (Demo)
       </Button>
-      <Button variant="ghost" className="w-full text-sm" onClick={clearCart}>
+      <Button variant="ghost" className="w-full text-sm tap-target" onClick={clearCart}>
         Clear cart
       </Button>
     </div>

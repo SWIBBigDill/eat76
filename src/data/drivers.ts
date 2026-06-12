@@ -29,7 +29,7 @@ export const initialDeliveries: DriverDelivery[] = [
   {
     id: "del-2001",
     orderId: "ord-1004",
-    restaurantName: "Chestnut Café",
+    restaurantName: "Caffè Pura",
     customerAddress: "123 E State St, Kennett Square",
     distance: "1.8 mi",
     basePay: DRIVER_BASE_PAY,
@@ -39,7 +39,7 @@ export const initialDeliveries: DriverDelivery[] = [
   {
     id: "del-2002",
     orderId: "ord-1003",
-    restaurantName: "State Street Tacos",
+    restaurantName: "Michoacana Grill",
     customerAddress: "45 Birch St, Kennett Square",
     distance: "2.4 mi",
     basePay: DRIVER_BASE_PAY,
@@ -49,7 +49,7 @@ export const initialDeliveries: DriverDelivery[] = [
   {
     id: "del-2003",
     orderId: "ord-1002",
-    restaurantName: "Kennett Square Grill",
+    restaurantName: "Letty's Tavern",
     customerAddress: "8 Willow Ln, Kennett Square",
     distance: "1.1 mi",
     basePay: DRIVER_BASE_PAY,

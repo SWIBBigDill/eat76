@@ -1,62 +1,54 @@
+import type { DeliveryZoneId } from "@/data/zones";
 import type { Restaurant } from "@/lib/types";
+import prospectsRaw from "@/data/prospects.raw.json";
+import imageManifest from "@/data/imageManifest.json";
 
-export const restaurants: Restaurant[] = [
-  {
-    id: "kennett-square-grill",
-    name: "Kennett Square Grill",
-    foodType: "American · Burgers",
-    distance: "1.2 mi",
-    deliveryTime: "25–35 min",
-    rating: 4.7,
-    zip: "19348",
-  },
-  {
-    id: "mushroom-bistro",
-    name: "Mushroom Bistro",
-    foodType: "Farm-to-Table · Italian",
-    distance: "0.8 mi",
-    deliveryTime: "20–30 min",
-    rating: 4.9,
-    zip: "19348",
-  },
-  {
-    id: "state-street-tacos",
-    name: "State Street Tacos",
-    foodType: "Mexican · Tacos",
-    distance: "1.5 mi",
-    deliveryTime: "30–40 min",
-    rating: 4.6,
-    zip: "19348",
-  },
-  {
-    id: "longwood-pizza-co",
-    name: "Longwood Pizza Co.",
-    foodType: "Pizza · Italian",
-    distance: "2.1 mi",
-    deliveryTime: "35–45 min",
-    rating: 4.5,
-    zip: "19348",
-  },
-  {
-    id: "chestnut-cafe",
-    name: "Chestnut Café",
-    foodType: "Breakfast · Coffee",
-    distance: "0.6 mi",
-    deliveryTime: "15–25 min",
-    rating: 4.8,
-    zip: "19348",
-  },
-  {
-    id: "philly-pretzel-house",
-    name: "Philly Pretzel House",
-    foodType: "Snacks · Philly Favorites",
-    distance: "1.0 mi",
-    deliveryTime: "20–30 min",
-    rating: 4.4,
-    zip: "19348",
-  },
-];
+type ProspectRow = {
+  id: string;
+  name: string;
+  foodType: string;
+  address: string;
+  phone: string | null;
+  zone: DeliveryZoneId;
+  zip: string;
+  website: string | null;
+  distance: string;
+  deliveryTime: string;
+  rating: number;
+};
+
+const manifest = imageManifest as Record<
+  string,
+  { hero: string | null; status?: string }
+>;
+
+function heroFor(id: string): string | undefined {
+  const entry = manifest[id];
+  if (entry?.hero) return entry.hero;
+  return undefined;
+}
+
+export const restaurants: Restaurant[] = (prospectsRaw as ProspectRow[]).map(
+  (p) => ({
+    id: p.id,
+    name: p.name,
+    foodType: p.foodType,
+    address: p.address,
+    phone: p.phone ?? undefined,
+    zone: p.zone,
+    distance: p.distance,
+    deliveryTime: p.deliveryTime,
+    rating: p.rating,
+    zip: p.zip,
+    website: p.website ?? undefined,
+    image: heroFor(p.id),
+  })
+);
 
 export function getRestaurantById(id: string) {
   return restaurants.find((r) => r.id === id);
+}
+
+export function getRestaurantsByZone(zone: DeliveryZoneId) {
+  return restaurants.filter((r) => r.zone === zone);
 }

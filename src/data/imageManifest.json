@@ -1,0 +1,317 @@
+{
+  "lily-asian-cuisine": {
+    "hero": "/restaurants/lily-asian-cuisine/hero.jpg",
+    "status": "ok",
+    "source": "https://website-cdn.menusifu.com/wp-content/uploads/lilysushiandgrill.com/2022/06/E5_BE_AE_E4_BF_A1_E5_9B_BE_E7_89_87_20180923115945.jpg"
+  },
+  "talulas-table": {
+    "hero": "/restaurants/talulas-table/hero.jpg",
+    "status": "ok",
+    "source": "https://images.squarespace-cdn.com/content/v1/60ec2ace438c0700e53dd133/1f4f1035-aed4-487e-9ce8-d8364f682abd/Talula%27s+Table+7.17.13+-+0077.jpg"
+  },
+  "la-verona": {
+    "hero": "/restaurants/la-verona/hero.jpg",
+    "status": "ok",
+    "source": "https://static.spotapps.co/website_images/ab_websites/82293_website/about_left.jpg"
+  },
+  "portabellos": {
+    "hero": "/restaurants/portabellos/hero.jpg",
+    "status": "ok",
+    "source": "https://images.squarespace-cdn.com/content/v1/6186cd5712c694052f402169/80791364-61a9-4015-b02a-30df5248a8f5/278076337_939526980232295_5122125864912851942_n.jpg"
+  },
+  "sweet-amelias": {
+    "hero": "/restaurants/sweet-amelias/hero.svg",
+    "status": "placeholder-error"
+  },
+  "lettys-tavern": {
+    "hero": "/restaurants/lettys-tavern/hero.jpg",
+    "status": "ok",
+    "source": "https://static.wixstatic.com/media/28a3f5_b865b2d9144c4033a8d4a28b252d9973~mv2.jpg/v1/fill/w_307,h_454,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/lettys-cocktail_JPG.jpg"
+  },
+  "michoacana-grill": {
+    "hero": "/restaurants/michoacana-grill/hero.svg",
+    "status": "placeholder"
+  },
+  "la-michoacana-ice-cream": {
+    "hero": "/restaurants/la-michoacana-ice-cream/hero.svg",
+    "status": "placeholder"
+  },
+  "taqueria-guadalajara-express": {
+    "hero": "/restaurants/taqueria-guadalajara-express/hero.svg",
+    "status": "placeholder"
+  },
+  "el-ranchero": {
+    "hero": "/restaurants/el-ranchero/hero.svg",
+    "status": "placeholder"
+  },
+  "sams-sub-shop": {
+    "hero": "/restaurants/sams-sub-shop/hero.svg",
+    "status": "placeholder"
+  },
+  "mary-pats-provisions": {
+    "hero": "/restaurants/mary-pats-provisions/hero.svg",
+    "status": "placeholder"
+  },
+  "kaboburritos": {
+    "hero": "/restaurants/kaboburritos/hero.svg",
+    "status": "placeholder"
+  },
+  "mezzaluna-ksq": {
+    "hero": "/restaurants/mezzaluna-ksq/hero.png",
+    "status": "ok",
+    "source": "https://img1.wsimg.com/isteam/ip/bf0fec12-0585-4e31-8838-b25de3ec42dc/Screen%20Shot%202024-06-18%20at%202.34.21%20PM.png"
+  },
+  "antonias-pizzeria": {
+    "hero": "/restaurants/antonias-pizzeria/hero.svg",
+    "status": "placeholder"
+  },
+  "pats-pizza-kennett-square": {
+    "hero": "/restaurants/pats-pizza-kennett-square/hero.svg",
+    "status": "placeholder-error"
+  },
+  "sang-tong-thai": {
+    "hero": "/restaurants/sang-tong-thai/hero.svg",
+    "status": "placeholder"
+  },
+  "breakfast-bravo": {
+    "hero": "/restaurants/breakfast-bravo/hero.svg",
+    "status": "placeholder"
+  },
+  "the-naked-olive": {
+    "hero": "/restaurants/the-naked-olive/hero.png",
+    "status": "ok",
+    "source": "https://www.thenakedolive.com/wp-content/themes/madwoo-child-109/assets/img/section1-img.png"
+  },
+  "floga-bistro": {
+    "hero": "/restaurants/floga-bistro/hero.jpg",
+    "status": "ok",
+    "source": "https://flogabistro.com/wp-content/uploads/sites/260660/0x0.jpg"
+  },
+  "china-garden": {
+    "hero": "/restaurants/china-garden/hero.svg",
+    "status": "placeholder"
+  },
+  "hearth-kitchen": {
+    "hero": "/restaurants/hearth-kitchen/hero.svg",
+    "status": "placeholder"
+  },
+  "applebees-kennett": {
+    "hero": "/restaurants/applebees-kennett/hero.svg",
+    "status": "placeholder-error"
+  },
+  "buddys-burgers": {
+    "hero": "/restaurants/buddys-burgers/hero.svg",
+    "status": "placeholder"
+  },
+  "capriottis-kennett": {
+    "hero": "/restaurants/capriottis-kennett/hero.svg",
+    "status": "placeholder-error"
+  },
+  "jersey-mikes-kennett": {
+    "hero": "/restaurants/jersey-mikes-kennett/hero.webp",
+    "status": "ok",
+    "source": "https://images.ctfassets.net/lkal9b5unnor/2VI5ghZ8TdYXu8gFqyRYET/5468aede9f9d52ce260886a9064633e4/ChxSaladsub_JM_Webpgs_1400_x_500.webp?q=80"
+  },
+  "caffe-pura": {
+    "hero": "/restaurants/caffe-pura/hero.svg",
+    "status": "placeholder"
+  },
+  "chaikhana-chai": {
+    "hero": "/restaurants/chaikhana-chai/hero.svg",
+    "status": "placeholder"
+  },
+  "the-creamery": {
+    "hero": "/restaurants/the-creamery/hero.svg",
+    "status": "placeholder-error"
+  },
+  "la-bamba": {
+    "hero": "/restaurants/la-bamba/hero.svg",
+    "status": "placeholder"
+  },
+  "deisys-cake-shop": {
+    "hero": "/restaurants/deisys-cake-shop/hero.svg",
+    "status": "placeholder"
+  },
+  "las-alondras-bakery": {
+    "hero": "/restaurants/las-alondras-bakery/hero.svg",
+    "status": "placeholder"
+  },
+  "hangry-bear-creamery": {
+    "hero": "/restaurants/hangry-bear-creamery/hero.svg",
+    "status": "placeholder"
+  },
+  "archies": {
+    "hero": "/restaurants/archies/hero.svg",
+    "status": "placeholder"
+  },
+  "sovana-bistro": {
+    "hero": "/restaurants/sovana-bistro/hero.png",
+    "status": "ok",
+    "source": "https://images.getbento.com/accounts/1d7f4fe7bdd27037d1cc8e4089bcf2dc/media/images/26701unnamed-1.png"
+  },
+  "farmer-and-co": {
+    "hero": "/restaurants/farmer-and-co/hero.svg",
+    "status": "placeholder"
+  },
+  "lilianas-pizza-grill": {
+    "hero": "/restaurants/lilianas-pizza-grill/hero.svg",
+    "status": "placeholder"
+  },
+  "deannas": {
+    "hero": "/restaurants/deannas/hero.svg",
+    "status": "placeholder"
+  },
+  "taquito-feliz": {
+    "hero": "/restaurants/taquito-feliz/hero.svg",
+    "status": "placeholder"
+  },
+  "taquitos-magy": {
+    "hero": "/restaurants/taquitos-magy/hero.svg",
+    "status": "placeholder"
+  },
+  "taqueria-moroleon": {
+    "hero": "/restaurants/taqueria-moroleon/hero.svg",
+    "status": "placeholder"
+  },
+  "bravo-pizza-avondale": {
+    "hero": "/restaurants/bravo-pizza-avondale/hero.svg",
+    "status": "placeholder"
+  },
+  "sake-hana": {
+    "hero": "/restaurants/sake-hana/hero.svg",
+    "status": "placeholder"
+  },
+  "perkins-avondale": {
+    "hero": "/restaurants/perkins-avondale/hero.svg",
+    "status": "placeholder-error"
+  },
+  "taco-bell-avondale": {
+    "hero": "/restaurants/taco-bell-avondale/hero.png",
+    "status": "ok",
+    "source": "https://dam.tacobell.com/asset/a120d516-f510-4083-bc1d-e04a5eb2a49b/E6_26_NAT_Jalapen-oCitrusSaucePacket_Carousel_Loyalty-png.png"
+  },
+  "earls-sub-shop": {
+    "hero": "/restaurants/earls-sub-shop/hero.svg",
+    "status": "placeholder"
+  },
+  "twelves-grill-cafe": {
+    "hero": "/restaurants/twelves-grill-cafe/hero.jpg",
+    "status": "ok",
+    "source": "https://img1.wsimg.com/isteam/ip/de4d85fb-af2e-49f2-aae0-ce7be585e678/CB90BB0A-AC43-4AF9-BAE3-94A2D3149E7A.jpeg"
+  },
+  "stubborn-goat-brewing": {
+    "hero": "/restaurants/stubborn-goat-brewing/hero.svg",
+    "status": "placeholder"
+  },
+  "china-kitchen-west-grove": {
+    "hero": "/restaurants/china-kitchen-west-grove/hero.svg",
+    "status": "placeholder"
+  },
+  "aurora-pizzeria": {
+    "hero": "/restaurants/aurora-pizzeria/hero.svg",
+    "status": "placeholder"
+  },
+  "corner-cafe-west-grove": {
+    "hero": "/restaurants/corner-cafe-west-grove/hero.svg",
+    "status": "placeholder"
+  },
+  "zen-modern-asian": {
+    "hero": "/restaurants/zen-modern-asian/hero.svg",
+    "status": "placeholder"
+  },
+  "fajitas-y-salsa": {
+    "hero": "/restaurants/fajitas-y-salsa/hero.svg",
+    "status": "placeholder"
+  },
+  "mcdonalds-west-grove": {
+    "hero": "/restaurants/mcdonalds-west-grove/hero.jpg",
+    "status": "ok",
+    "source": "https://www.mcdonalds.com/content/dam/sites/usa/nfl/icons/McD_GoldenArches_200x200.jpg"
+  },
+  "panaderia-estrella": {
+    "hero": "/restaurants/panaderia-estrella/hero.svg",
+    "status": "placeholder"
+  },
+  "new-dragon-hockessin": {
+    "hero": "/restaurants/new-dragon-hockessin/hero.svg",
+    "status": "placeholder"
+  },
+  "back-burner": {
+    "hero": "/restaurants/back-burner/hero.png",
+    "status": "ok",
+    "source": "https://static.spotapps.co/web/placeholder.png"
+  },
+  "redfire-grill": {
+    "hero": "/restaurants/redfire-grill/hero.svg",
+    "status": "placeholder"
+  },
+  "letties-kitchen": {
+    "hero": "/restaurants/letties-kitchen/hero.svg",
+    "status": "placeholder"
+  },
+  "mexican-table": {
+    "hero": "/restaurants/mexican-table/hero.svg",
+    "status": "placeholder"
+  },
+  "corner-cove": {
+    "hero": "/restaurants/corner-cove/hero.svg",
+    "status": "placeholder"
+  },
+  "harpers-asian-bistro": {
+    "hero": "/restaurants/harpers-asian-bistro/hero.svg",
+    "status": "placeholder"
+  },
+  "primas-pizza-pasta": {
+    "hero": "/restaurants/primas-pizza-pasta/hero.svg",
+    "status": "placeholder"
+  },
+  "perfect-cup-cafe": {
+    "hero": "/restaurants/perfect-cup-cafe/hero.svg",
+    "status": "placeholder"
+  },
+  "bachetti-bros": {
+    "hero": "/restaurants/bachetti-bros/hero.svg",
+    "status": "placeholder"
+  },
+  "soybean-asian-grille": {
+    "hero": "/restaurants/soybean-asian-grille/hero.svg",
+    "status": "placeholder"
+  },
+  "antica-italian": {
+    "hero": "/restaurants/antica-italian/hero.svg",
+    "status": "placeholder"
+  },
+  "agave-mexican": {
+    "hero": "/restaurants/agave-mexican/hero.svg",
+    "status": "placeholder-error"
+  },
+  "hanks-place": {
+    "hero": "/restaurants/hanks-place/hero.svg",
+    "status": "placeholder"
+  },
+  "the-gables-chadds-ford": {
+    "hero": "/restaurants/the-gables-chadds-ford/hero.png",
+    "status": "ok",
+    "source": "https://static.spotapps.co/web/placeholder.png"
+  },
+  "northbrook-marketplace": {
+    "hero": "/restaurants/northbrook-marketplace/hero.svg",
+    "status": "placeholder"
+  },
+  "the-whip-tavern": {
+    "hero": "/restaurants/the-whip-tavern/hero.svg",
+    "status": "placeholder-error"
+  },
+  "the-pear": {
+    "hero": "/restaurants/the-pear/hero.svg",
+    "status": "placeholder"
+  },
+  "daddys-kitchen": {
+    "hero": "/restaurants/daddys-kitchen/hero.svg",
+    "status": "placeholder"
+  },
+  "the-haven-social": {
+    "hero": "/restaurants/the-haven-social/hero.svg",
+    "status": "placeholder"
+  }
+}

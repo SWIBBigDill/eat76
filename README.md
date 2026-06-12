@@ -64,6 +64,16 @@ The workflow in `.github/workflows/deploy.yml` deploys on every push to `main`.
 npx vercel deploy --prod
 ```
 
+## Prospect restaurants (19348 radius)
+
+~75 local restaurants are preloaded from the Eat76 onboarding lead list in `src/data/prospects.raw.json`, grouped by delivery zone in `/order`.
+
+**Image policy:** Hero images are fetched only from restaurant-owned websites via `npm run fetch-assets`. Delivery-app menus (DoorDash, Grubhub, etc.) are not scraped. Restaurants without a fetchable site image get a branded SVG placeholder. Menu overrides exist only where sourced from official sites (e.g. Lily, La Verona); others use cuisine templates until onboarding.
+
+```bash
+npm run fetch-assets   # refreshes public/restaurants/* and imageManifest.json
+```
+
 ## Future integrations
 
 See `src/lib/integrations.ts` and `TODO` comments throughout the codebase for Supabase and Stripe hooks.
