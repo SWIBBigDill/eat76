@@ -14,6 +14,7 @@ import {
   type OrderTrackStatus,
   type TrackedOrder,
 } from "@/lib/order-tracking";
+import { recordOrderStatusNotification } from "@/lib/notifications";
 
 const POLL_INTERVAL_MS = 30_000;
 const DEMO_TICK_MS = 5_000;
@@ -70,6 +71,7 @@ export function useOrderTracking(order: PlacedOrder | null): UseOrderTrackingRes
 
       if (prevStatusRef.current !== null && prevStatusRef.current !== status) {
         notifyStatusChange(status);
+        recordOrderStatusNotification(base.id, status, base.restaurantName);
       }
       prevStatusRef.current = status;
     },
@@ -104,17 +106,29 @@ export function useOrderTracking(order: PlacedOrder | null): UseOrderTrackingRes
 
   useEffect(() => {
     if (!order) {
-      setTracked(null);
-      setLoading(false);
-      return;
+      const frame = requestAnimationFrame(() => {
+        setTracked(null);
+        setLoading(false);
+      });
+      return () => cancelAnimationFrame(frame);
     }
 
     prevStatusRef.current = loadLocalOrderStatus(order.id) ?? getDemoTrackStatus(order.placedAt);
-    setLoading(true);
-    void fetchFromApi().finally(() => setLoading(false));
+    const frame = requestAnimationFrame(() => setLoading(true));
+    const initialFetch = window.setTimeout(() => {
+      void fetchFromApi().finally(() => {
+        requestAnimationFrame(() => setLoading(false));
+      });
+    }, 0);
 
-    const poll = window.setInterval(() => void fetchFromApi(), POLL_INTERVAL_MS);
-    return () => window.clearInterval(poll);
+    const poll = window.setInterval(() => {
+      void fetchFromApi();
+    }, POLL_INTERVAL_MS);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(initialFetch);
+      window.clearInterval(poll);
+    };
   }, [order, fetchFromApi]);
 
   useEffect(() => {

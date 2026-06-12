@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useCart } from "@/context/CartContext";
@@ -21,13 +21,9 @@ function formatDate(iso: string) {
 }
 
 export function OrderHistoryPanel({ compact }: { compact?: boolean }) {
-  const [orders, setOrders] = useState<PlacedOrder[]>([]);
+  const [orders] = useState<PlacedOrder[]>(() => loadOrderHistory().slice(0, 5));
   const { reorderFromOrder } = useCart();
   const router = useRouter();
-
-  useEffect(() => {
-    setOrders(loadOrderHistory().slice(0, 5));
-  }, []);
 
   const handleReorder = useCallback(
     (order: PlacedOrder) => {

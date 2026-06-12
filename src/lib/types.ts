@@ -30,7 +30,7 @@ export type MenuOptionGroup = {
   choices: MenuOptionChoice[];
 };
 
-export type MenuBadge = "popular" | "spicy";
+export type MenuBadge = "popular" | "spicy" | "vegetarian" | "gluten-free";
 
 export type MenuItem = {
   id: string;

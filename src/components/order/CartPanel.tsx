@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { useCart } from "@/context/CartContext";
 import { isStripeClientConfigured } from "@/lib/stripe/client";
+import { getDeliveryTimeSlots } from "@/lib/delivery-slots";
 
 const TIP_OPTIONS = [0, 2, 4, 6, 8];
 
@@ -39,11 +40,23 @@ export function CartPanel() {
     setDeliveryAddress,
     deliveryAddressValid,
     deliveryAddressError,
+    orderNotes,
+    setOrderNotes,
+    deliverySchedule,
+    setDeliverySchedule,
+    promoCode,
+    setPromoCode,
+    promoDiscount,
+    promoMessage,
+    customTipMode,
+    setCustomTipMode,
   } = useCart();
   const router = useRouter();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const stripeReady = isStripeClientConfigured();
+  const timeSlots = getDeliveryTimeSlots();
+  const [customTipValue, setCustomTipValue] = useState("");
 
   useEffect(() => {
     if (itemCount === 0) setCartOpen(false);
@@ -134,6 +147,19 @@ export function CartPanel() {
     setDeliveryAddress,
     deliveryAddressValid,
     deliveryAddressError,
+    orderNotes,
+    setOrderNotes,
+    deliverySchedule,
+    setDeliverySchedule,
+    timeSlots,
+    promoCode,
+    setPromoCode,
+    promoDiscount,
+    promoMessage,
+    customTipMode,
+    setCustomTipMode,
+    customTipValue,
+    setCustomTipValue,
   };
 
   return (
@@ -184,6 +210,19 @@ type CartContentProps = {
   setDeliveryAddress: (address: string) => void;
   deliveryAddressValid: boolean;
   deliveryAddressError: string | null;
+  orderNotes: string;
+  setOrderNotes: (notes: string) => void;
+  deliverySchedule: string;
+  setDeliverySchedule: (schedule: string) => void;
+  timeSlots: { id: string; label: string }[];
+  promoCode: string;
+  setPromoCode: (code: string) => void;
+  promoDiscount: number;
+  promoMessage: string | null;
+  customTipMode: boolean;
+  setCustomTipMode: (custom: boolean) => void;
+  customTipValue: string;
+  setCustomTipValue: (value: string) => void;
 };
 
 function CartContent({
@@ -206,6 +245,19 @@ function CartContent({
   setDeliveryAddress,
   deliveryAddressValid,
   deliveryAddressError,
+  orderNotes,
+  setOrderNotes,
+  deliverySchedule,
+  setDeliverySchedule,
+  timeSlots,
+  promoCode,
+  setPromoCode,
+  promoDiscount,
+  promoMessage,
+  customTipMode,
+  setCustomTipMode,
+  customTipValue,
+  setCustomTipValue,
 }: CartContentProps) {
   return (
     <div className={compact ? "space-y-4" : "space-y-4"}>
@@ -245,6 +297,38 @@ function CartContent({
         {deliveryAddressValid && (
           <p className="mt-1 text-xs text-eat-muted">Delivering in your zone</p>
         )}
+      </div>
+
+      <div>
+        <label htmlFor={compact ? "delivery-schedule-mobile" : "delivery-schedule"} className="text-sm font-medium text-eat-ink">
+          Delivery time
+        </label>
+        <select
+          id={compact ? "delivery-schedule-mobile" : "delivery-schedule"}
+          value={deliverySchedule}
+          onChange={(e) => setDeliverySchedule(e.target.value)}
+          className="tap-target mt-2 w-full rounded-xl border border-eat-border px-3 py-2.5 text-sm text-eat-ink focus:border-eat-blue focus:outline-none focus:ring-2 focus:ring-eat-blue/20"
+        >
+          {timeSlots.map((slot) => (
+            <option key={slot.id} value={slot.id}>
+              {slot.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor={compact ? "order-notes-mobile" : "order-notes"} className="text-sm font-medium text-eat-ink">
+          Order notes
+        </label>
+        <input
+          id={compact ? "order-notes-mobile" : "order-notes"}
+          type="text"
+          value={orderNotes}
+          onChange={(e) => setOrderNotes(e.target.value)}
+          placeholder="Leave at door, extra napkins…"
+          className="tap-target mt-2 w-full rounded-xl border border-eat-border px-3 py-2.5 text-sm text-eat-ink placeholder:text-eat-muted focus:border-eat-blue focus:outline-none focus:ring-2 focus:ring-eat-blue/20"
+        />
       </div>
 
       <ul className="space-y-2">
@@ -291,7 +375,16 @@ function CartContent({
         </div>
         <div className="flex justify-between">
           <span className="text-eat-muted">Service fee</span>
-          <span>{formatMoney(serviceFee)}</span>
+          <span>
+            {promoDiscount > 0 ? (
+              <>
+                <span className="mr-1 text-eat-muted line-through">${(serviceFee + promoDiscount).toFixed(2)}</span>
+                {formatMoney(serviceFee)}
+              </>
+            ) : (
+              formatMoney(serviceFee)
+            )}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-eat-muted">Delivery fee</span>
@@ -306,9 +399,13 @@ function CartContent({
             <button
               key={amount}
               type="button"
-              onClick={() => setTip(amount)}
+              onClick={() => {
+                setCustomTipMode(false);
+                setCustomTipValue("");
+                setTip(amount);
+              }}
               className={`tap-target rounded-xl px-4 py-2 text-sm font-semibold transition ${
-                tip === amount
+                !customTipMode && tip === amount
                   ? "bg-eat-red text-white"
                   : "border border-eat-border text-eat-ink hover:bg-eat-soft"
               }`}
@@ -317,7 +414,46 @@ function CartContent({
             </button>
           ))}
         </div>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="text-xs font-medium text-eat-muted">Custom</span>
+          <input
+            type="number"
+            min="0"
+            step="0.5"
+            value={customTipMode ? customTipValue : ""}
+            onChange={(e) => {
+              setCustomTipMode(true);
+              setCustomTipValue(e.target.value);
+              const parsed = parseFloat(e.target.value);
+              if (!Number.isNaN(parsed) && parsed >= 0) setTip(parsed);
+            }}
+            onFocus={() => setCustomTipMode(true)}
+            placeholder="$"
+            className="tap-target w-20 rounded-xl border border-eat-border px-3 py-2 text-sm focus:border-eat-blue focus:outline-none focus:ring-2 focus:ring-eat-blue/20"
+          />
+        </div>
         <p className="mt-2 text-xs text-eat-muted">100% of tips go to your driver.</p>
+      </div>
+
+      <div>
+        <label htmlFor={compact ? "promo-code-mobile" : "promo-code"} className="text-sm font-medium text-eat-ink">
+          Promo code
+        </label>
+        <div className="mt-2 flex gap-2">
+          <input
+            id={compact ? "promo-code-mobile" : "promo-code"}
+            type="text"
+            value={promoCode}
+            onChange={(e) => setPromoCode(e.target.value)}
+            placeholder="Try EAT76"
+            className="tap-target min-w-0 flex-1 rounded-xl border border-eat-border px-3 py-2.5 text-sm uppercase focus:border-eat-blue focus:outline-none focus:ring-2 focus:ring-eat-blue/20"
+          />
+        </div>
+        {promoMessage && (
+          <p className={`mt-1 text-xs ${promoDiscount > 0 ? "text-green-700" : "text-eat-red"}`}>
+            {promoMessage}
+          </p>
+        )}
       </div>
 
       <CheckoutSavings foodSubtotal={subtotal} tip={tip} compact={compact} />

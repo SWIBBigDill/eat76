@@ -55,8 +55,12 @@ const tabs = [
 ];
 
 const moreLinks = [
+  { href: "/account", label: "Your account", description: "Profile, orders, and notifications" },
+  { href: "/account", label: "Your account", description: "Profile, favorites, order history" },
   { href: "/restaurants", label: "Restaurant partners", description: "Join as a restaurant" },
   { href: "/drivers", label: "Drive with Eat76", description: "Apply to deliver locally" },
+  { href: "/privacy", label: "Privacy policy", description: "How we handle your data" },
+  { href: "/terms", label: "Terms of service", description: "Rules for using Eat76" },
   { href: "/#early-access", label: "Early access waitlist", description: "Customer, restaurant, or driver" },
 ];
 
@@ -66,10 +70,13 @@ export function MobileNav() {
   const activeOrder = useActiveOrder();
 
   const moreActive =
+    pathname === "/account" ||
     pathname === "/restaurants" ||
     pathname.startsWith("/restaurants/") ||
     pathname === "/drivers" ||
-    pathname.startsWith("/drivers/");
+    pathname.startsWith("/drivers/") ||
+    pathname === "/privacy" ||
+    pathname === "/terms";
 
   const trackHref = activeOrder ? `/order/track/${activeOrder.order.id}` : null;
 

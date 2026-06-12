@@ -221,6 +221,7 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Crab Cake",
       description: "Jumbo lump crab, remoulade, lemon.",
       basePrice: 16,
+      badges: ["popular"],
     },
     {
       name: "Seafood Risotto",
@@ -231,18 +232,32 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Pan-Seared Salmon",
       description: "Wild salmon, lemon butter, seasonal vegetables.",
       basePrice: 24,
+      badges: ["gluten-free"],
       optionGroups: [sideChoice],
     },
     {
       name: "Eggplant Parmigiana",
       description: "Breaded eggplant, marinara, mozzarella, side of pasta.",
       basePrice: 20,
+      badges: ["vegetarian"],
       optionGroups: [pastaProtein],
+    },
+    {
+      name: "Grilled Octopus",
+      description: "Charred octopus, white bean purée, olive oil, lemon.",
+      basePrice: 18,
+      badges: ["gluten-free"],
+    },
+    {
+      name: "Caesar Salad",
+      description: "Romaine, parmesan, house croutons, anchovy dressing.",
+      basePrice: 11,
     },
     {
       name: "Tiramisu",
       description: "Classic Italian dessert.",
       basePrice: 9,
+      badges: ["vegetarian"],
     },
   ],
 
@@ -294,6 +309,7 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Letty's Burger",
       description: "Half-pound patty, lettuce, tomato, pickle, tavern sauce.",
       basePrice: 14,
+      badges: ["popular"],
       optionGroups: [burgerTemp, burgerCheese, burgerExtras, sideChoice],
     },
     {
@@ -310,6 +326,7 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Chicken Wings",
       description: "Ten wings, celery, blue cheese.",
       basePrice: 13,
+      badges: ["spicy"],
       optionGroups: [
         {
           id: "sauce",
@@ -329,6 +346,19 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Pub Pretzel",
       description: "Warm Bavarian pretzel, beer cheese, mustard.",
       basePrice: 9,
+      badges: ["vegetarian"],
+    },
+    {
+      name: "Tavern Salad",
+      description: "Mixed greens, cherry tomatoes, cucumber, ranch.",
+      basePrice: 10,
+      badges: ["vegetarian", "gluten-free"],
+    },
+    {
+      name: "French Onion Soup",
+      description: "Caramelized onions, gruyère crouton.",
+      basePrice: 8,
+      badges: ["vegetarian"],
     },
   ],
 
@@ -437,7 +467,7 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Tom Yum Soup",
       description: "Spicy lemongrass broth, mushrooms, tomatoes.",
       basePrice: 8,
-      badges: ["spicy"],
+      badges: ["spicy", "gluten-free"],
       optionGroups: [
         {
           id: "protein",
@@ -463,6 +493,25 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Spring Rolls",
       description: "Crispy vegetable rolls, sweet chili sauce.",
       basePrice: 6,
+      badges: ["vegetarian"],
+    },
+    {
+      name: "Papaya Salad",
+      description: "Green papaya, peanuts, lime, fish sauce dressing.",
+      basePrice: 9,
+      badges: ["spicy", "gluten-free"],
+    },
+    {
+      name: "Massaman Curry",
+      description: "Mild peanut curry, potatoes, onion, jasmine rice.",
+      basePrice: 15,
+      optionGroups: [thaiProtein],
+    },
+    {
+      name: "Mango Sticky Rice",
+      description: "Sweet coconut rice, fresh mango.",
+      basePrice: 7,
+      badges: ["vegetarian", "gluten-free"],
     },
   ],
 
@@ -710,6 +759,348 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Caesar Salad",
       description: "Romaine, parmesan, croutons.",
       basePrice: 9,
+    },
+  ],
+
+  "floga-bistro": [
+    {
+      name: "Wood-Fired Margherita",
+      description: "San Marzano tomato, fresh mozzarella, basil, olive oil.",
+      basePrice: 16,
+      badges: ["popular", "vegetarian"],
+      optionGroups: [pizzaSize, pizzaToppings],
+    },
+    {
+      name: "Mediterranean Flatbread",
+      description: "Hummus, roasted peppers, feta, olives, arugula.",
+      basePrice: 14,
+      badges: ["vegetarian"],
+      optionGroups: [pizzaSize],
+    },
+    {
+      name: "Grilled Lamb Chops",
+      description: "Herb-marinated lamb, tzatziki, lemon potatoes.",
+      basePrice: 26,
+      badges: ["gluten-free"],
+      optionGroups: [sideChoice],
+    },
+    {
+      name: "Chicken Souvlaki Plate",
+      description: "Marinated chicken skewers, pita, Greek salad, tzatziki.",
+      basePrice: 18,
+    },
+    {
+      name: "Spanakopita",
+      description: "Spinach and feta in flaky phyllo, side salad.",
+      basePrice: 13,
+      badges: ["vegetarian"],
+    },
+    {
+      name: "Greek Salad",
+      description: "Tomato, cucumber, red onion, feta, oregano vinaigrette.",
+      basePrice: 11,
+      badges: ["vegetarian", "gluten-free"],
+    },
+    {
+      name: "Baklava",
+      description: "Honey, pistachio, phyllo layers.",
+      basePrice: 7,
+      badges: ["vegetarian"],
+    },
+  ],
+
+  "china-garden": [
+    {
+      name: "General Tso's Chicken",
+      description: "Crispy chicken, sweet-spicy sauce, steamed rice.",
+      basePrice: 13.5,
+      badges: ["popular", "spicy"],
+      optionGroups: [spiceLevel],
+    },
+    {
+      name: "Beef with Broccoli",
+      description: "Wok-seared beef, fresh broccoli, brown garlic sauce.",
+      basePrice: 14,
+    },
+    {
+      name: "Vegetable Lo Mein",
+      description: "Soft noodles, mixed vegetables, light soy.",
+      basePrice: 11,
+      badges: ["vegetarian"],
+    },
+    {
+      name: "Pork Dumplings",
+      description: "Steamed or pan-fried, soy-ginger dipping sauce.",
+      basePrice: 8,
+      optionGroups: [
+        {
+          id: "style",
+          name: "Style",
+          required: true,
+          maxSelections: 1,
+          choices: [
+            { id: "steamed", name: "Steamed", priceDelta: 0 },
+            { id: "pan-fried", name: "Pan-fried", priceDelta: 0 },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Hot and Sour Soup",
+      description: "Tofu, mushrooms, bamboo, egg ribbon.",
+      basePrice: 5.5,
+      badges: ["spicy"],
+    },
+    {
+      name: "Steamed Edamame",
+      description: "Soybeans with sea salt.",
+      basePrice: 5,
+      badges: ["vegetarian", "gluten-free"],
+    },
+    {
+      name: "Mongolian Beef",
+      description: "Scallions, garlic, sweet soy glaze, jasmine rice.",
+      basePrice: 15,
+      badges: ["popular"],
+    },
+    {
+      name: "Egg Foo Young",
+      description: "Vegetable omelette patty, brown gravy, rice.",
+      basePrice: 12,
+      badges: ["vegetarian"],
+    },
+  ],
+
+  "twelves-grill-cafe": [
+    {
+      name: "Twelves Burger",
+      description: "Angus beef, aged cheddar, bacon jam, brioche.",
+      basePrice: 16,
+      badges: ["popular"],
+      optionGroups: [burgerTemp, burgerCheese, burgerExtras, sideChoice],
+    },
+    {
+      name: "Pan-Seared Salmon",
+      description: "Farro risotto, asparagus, lemon beurre blanc.",
+      basePrice: 24,
+      badges: ["gluten-free"],
+    },
+    {
+      name: "Short Rib Grilled Cheese",
+      description: "Braised short rib, caramelized onion, gruyère, sourdough.",
+      basePrice: 15,
+    },
+    {
+      name: "Seasonal Soup",
+      description: "Chef's daily soup with artisan bread.",
+      basePrice: 8,
+    },
+    {
+      name: "Caesar Salad",
+      description: "Romaine, parmesan, house croutons.",
+      basePrice: 11,
+      optionGroups: [
+        {
+          id: "protein",
+          name: "Add protein",
+          required: false,
+          maxSelections: 1,
+          choices: [
+            { id: "none", name: "No protein", priceDelta: 0 },
+            { id: "chicken", name: "Grilled chicken", priceDelta: 5 },
+            { id: "salmon", name: "Salmon", priceDelta: 8 },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Chocolate Lava Cake",
+      description: "Warm chocolate center, vanilla ice cream.",
+      basePrice: 9,
+      badges: ["vegetarian"],
+    },
+  ],
+
+  "back-burner": [
+    {
+      name: "Crab and Artichoke Dip",
+      description: "Warm dip, toasted baguette chips.",
+      basePrice: 14,
+      badges: ["popular"],
+    },
+    {
+      name: "Back Burner Burger",
+      description: "Half-pound Angus, smoked gouda, caramelized onions.",
+      basePrice: 17,
+      optionGroups: [burgerTemp, burgerCheese, burgerExtras, sideChoice],
+    },
+    {
+      name: "Pan-Roasted Chicken",
+      description: "Herb jus, mashed potatoes, seasonal vegetables.",
+      basePrice: 22,
+      badges: ["gluten-free"],
+    },
+    {
+      name: "Filet Mignon",
+      description: "8 oz center cut, red wine demi, truffle fries.",
+      basePrice: 38,
+      optionGroups: [
+        {
+          id: "temp",
+          name: "Temperature",
+          required: true,
+          maxSelections: 1,
+          choices: [
+            { id: "medium-rare", name: "Medium rare", priceDelta: 0 },
+            { id: "medium", name: "Medium", priceDelta: 0 },
+            { id: "medium-well", name: "Medium well", priceDelta: 0 },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Seasonal Salad",
+      description: "Local greens, goat cheese, candied pecans, vinaigrette.",
+      basePrice: 12,
+      badges: ["vegetarian", "gluten-free"],
+    },
+    {
+      name: "Crème Brûlée",
+      description: "Vanilla bean custard, caramelized sugar.",
+      basePrice: 9,
+      badges: ["vegetarian", "gluten-free"],
+    },
+  ],
+
+  "agave-mexican": [
+    {
+      name: "Street Taco Trio",
+      description: "Three corn tortillas, onion, cilantro, lime.",
+      basePrice: 13,
+      badges: ["popular"],
+      optionGroups: [tacoProtein, salsaHeat],
+    },
+    {
+      name: "Enchiladas Verdes",
+      description: "Corn tortillas, chicken, tomatillo sauce, crema.",
+      basePrice: 15,
+      optionGroups: [salsaHeat],
+    },
+    {
+      name: "Vegetarian Burrito",
+      description: "Black beans, rice, peppers, guacamole, cheese.",
+      basePrice: 12,
+      badges: ["vegetarian"],
+      optionGroups: [salsaHeat],
+    },
+    {
+      name: "Guacamole and Chips",
+      description: "Tableside-style guacamole, fresh tortilla chips.",
+      basePrice: 9,
+      badges: ["vegetarian", "gluten-free"],
+    },
+    {
+      name: "Carne Asada Plate",
+      description: "Grilled steak, rice, beans, pico, tortillas.",
+      basePrice: 19,
+      badges: ["gluten-free"],
+    },
+    {
+      name: "Churros",
+      description: "Cinnamon sugar, chocolate dipping sauce.",
+      basePrice: 7,
+      badges: ["vegetarian"],
+    },
+  ],
+
+  "antica-italian": [
+    {
+      name: "Burrata Caprese",
+      description: "Fresh burrata, heirloom tomato, basil, balsamic.",
+      basePrice: 14,
+      badges: ["vegetarian", "gluten-free"],
+    },
+    {
+      name: "Osso Buco",
+      description: "Braised veal shank, saffron risotto, gremolata.",
+      basePrice: 32,
+      badges: ["popular"],
+    },
+    {
+      name: "Rigatoni alla Vodka",
+      description: "Rigatoni, creamy tomato vodka sauce, parmesan.",
+      basePrice: 19,
+      badges: ["vegetarian"],
+      optionGroups: [pastaProtein],
+    },
+    {
+      name: "Chicken Piccata",
+      description: "Lemon-caper butter, angel hair, seasonal vegetables.",
+      basePrice: 22,
+    },
+    {
+      name: "Quattro Formaggi Pizza",
+      description: "Four-cheese blend, white sauce, oregano.",
+      basePrice: 17,
+      badges: ["vegetarian"],
+      optionGroups: [pizzaSize, pizzaToppings],
+    },
+    {
+      name: "Tiramisu",
+      description: "Espresso-soaked ladyfingers, mascarpone.",
+      basePrice: 9,
+      badges: ["vegetarian"],
+    },
+  ],
+
+  "stubborn-goat-brewing": [
+    {
+      name: "Goat Burger",
+      description: "Half-pound patty, goat cheese, arugula, fig jam.",
+      basePrice: 15,
+      badges: ["popular"],
+      optionGroups: [burgerTemp, burgerExtras, sideChoice],
+    },
+    {
+      name: "Beer-Battered Fish Tacos",
+      description: "Three tacos, slaw, chipotle crema, lime.",
+      basePrice: 14,
+    },
+    {
+      name: "Brewpub Pretzel Bites",
+      description: "Warm pretzel bites, beer cheese, mustard.",
+      basePrice: 10,
+      badges: ["vegetarian"],
+    },
+    {
+      name: "BBQ Pulled Pork Sandwich",
+      description: "Slow-smoked pork, coleslaw, pickle, brioche bun.",
+      basePrice: 13,
+      optionGroups: [sideChoice],
+    },
+    {
+      name: "Seasonal IPA Flight",
+      description: "Four 4 oz pours of rotating house beers.",
+      basePrice: 12,
+    },
+    {
+      name: "Loaded Nachos",
+      description: "Tortilla chips, cheese, jalapeños, sour cream, salsa.",
+      basePrice: 11,
+      badges: ["vegetarian"],
+      optionGroups: [
+        {
+          id: "protein",
+          name: "Add protein",
+          required: false,
+          maxSelections: 1,
+          choices: [
+            { id: "none", name: "No protein", priceDelta: 0 },
+            { id: "chicken", name: "Chicken", priceDelta: 4 },
+            { id: "pork", name: "Pulled pork", priceDelta: 4 },
+          ],
+        },
+      ],
     },
   ],
 };

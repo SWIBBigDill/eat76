@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import {
+  formatHoursStatus,
+  isRestaurantOpenNow,
+} from "@/lib/restaurant-hours";
 import type { Restaurant } from "@/lib/types";
 
 type RestaurantCardProps = {
@@ -13,11 +17,9 @@ type RestaurantCardProps = {
 
 export function RestaurantCard({ restaurant }: RestaurantCardProps) {
   const imageSrc = restaurant.image ?? `/restaurants/${restaurant.id}/hero.svg`;
-  const [favorited, setFavorited] = useState(false);
-
-  useEffect(() => {
-    setFavorited(isFavorite(restaurant.id));
-  }, [restaurant.id]);
+  const [favorited, setFavorited] = useState(() => isFavorite(restaurant.id));
+  const open = isRestaurantOpenNow(restaurant);
+  const hoursLabel = formatHoursStatus(restaurant);
 
   function handleFavoriteClick(e: React.MouseEvent) {
     e.preventDefault();
@@ -59,6 +61,13 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           </button>
           <span className="absolute right-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-bold text-eat-blue shadow-sm backdrop-blur">
             ★ {restaurant.rating}
+          </span>
+          <span
+            className={`absolute bottom-3 left-3 rounded-full px-2.5 py-1 text-xs font-bold shadow-sm backdrop-blur ${
+              open ? "bg-green-600/90 text-white" : "bg-gray-800/80 text-white"
+            }`}
+          >
+            {open ? "Open" : hoursLabel}
           </span>
         </div>
         <div className="flex flex-col gap-2.5 p-4">

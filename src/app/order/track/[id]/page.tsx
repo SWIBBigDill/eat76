@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DriverMap } from "@/components/order/DriverMap";
 import { OrderTracker } from "@/components/order/OrderTracker";
 import { OrderUpdateToast } from "@/components/order/OrderUpdateToast";
@@ -25,16 +25,13 @@ export default function TrackOrderPage() {
   const { order, etaMinutes, notification, dismissNotification } = useOrderTracking(
     baseOrder as PlacedOrder | null
   );
-  const [showNotifyPrompt, setShowNotifyPrompt] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [notifyDismissed, setNotifyDismissed] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !("Notification" in window)) return;
-    if (Notification.permission === "default" && !notifyDismissed) {
-      setShowNotifyPrompt(true);
-    }
-  }, [notifyDismissed]);
+  const showNotifyPrompt =
+    !notifyDismissed &&
+    typeof window !== "undefined" &&
+    "Notification" in window &&
+    Notification.permission === "default";
 
   const handleEnableNotifications = useCallback(async () => {
     if (!("Notification" in window)) return;
@@ -43,12 +40,10 @@ export default function TrackOrderPage() {
     } catch {
       /* graceful decline */
     }
-    setShowNotifyPrompt(false);
     setNotifyDismissed(true);
   }, []);
 
   const handleDismissNotify = useCallback(() => {
-    setShowNotifyPrompt(false);
     setNotifyDismissed(true);
     dismissNotification();
   }, [dismissNotification]);

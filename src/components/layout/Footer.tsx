@@ -6,10 +6,13 @@ type FooterProps = {
 };
 
 const partnerLinks = [
+  { href: "/order", label: "Order" },
+  { href: "/account", label: "Account" },
   { href: "/restaurants", label: "Restaurant partners" },
   { href: "/drivers", label: "Drive with Eat76" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/admin", label: "Admin demo" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
 ];
 
 export function Footer({ className = "" }: FooterProps) {
@@ -38,7 +41,10 @@ export function Footer({ className = "" }: FooterProps) {
           Launching first in <span className="font-semibold text-eat-ink">19348</span>
         </p>
         <p className="text-xs text-eat-muted">
-          © {new Date().getFullYear()} Eat76. Local-first delivery.
+          <a href="mailto:support@eat76.com" className="hover:text-eat-blue">
+            support@eat76.com
+          </a>
+          {" · "}© {new Date().getFullYear()} Eat76. Local-first delivery.
         </p>
       </div>
     </footer>

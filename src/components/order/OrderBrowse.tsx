@@ -7,37 +7,81 @@ import { OrderHistoryPanel } from "@/components/order/OrderHistoryPanel";
 import { PopularNearYou } from "@/components/order/PopularNearYou";
 import { RestaurantCard } from "@/components/order/RestaurantCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { EmptyRestaurantsIllustration } from "@/components/ui/EmptyIllustrations";
 import { getRestaurantsByZone, restaurants } from "@/data/restaurants";
 import { deliveryZones, type DeliveryZoneId } from "@/data/zones";
 import {
   getCuisineFilters,
   restaurantMatchesCuisine,
 } from "@/lib/cuisine-filters";
+import { loadFavoriteIds } from "@/lib/favorites";
+import {
+  isRestaurantOpenNow,
+  parseDistanceMiles,
+  parsePrepMinutes,
+} from "@/lib/restaurant-hours";
+import type { Restaurant } from "@/lib/types";
 
 const cuisineFilters = getCuisineFilters();
+
+type SortOption = "nearest" | "fastest" | "rating" | "favorites";
+
+function sortRestaurants(list: Restaurant[], sort: SortOption): Restaurant[] {
+  const favoriteIds = new Set(loadFavoriteIds());
+  const sorted = [...list];
+
+  switch (sort) {
+    case "nearest":
+      return sorted.sort(
+        (a, b) => parseDistanceMiles(a.distance) - parseDistanceMiles(b.distance)
+      );
+    case "fastest":
+      return sorted.sort(
+        (a, b) => parsePrepMinutes(a.deliveryTime) - parsePrepMinutes(b.deliveryTime)
+      );
+    case "rating":
+      return sorted.sort((a, b) => b.rating - a.rating);
+    case "favorites":
+      return sorted.sort((a, b) => {
+        const af = favoriteIds.has(a.id) ? 1 : 0;
+        const bf = favoriteIds.has(b.id) ? 1 : 0;
+        if (bf !== af) return bf - af;
+        return b.rating - a.rating;
+      });
+    default:
+      return sorted;
+  }
+}
 
 export function OrderBrowse() {
   const [activeZone, setActiveZone] = useState<DeliveryZoneId | "all">("all");
   const [activeCuisine, setActiveCuisine] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("nearest");
+  const [openNowOnly, setOpenNowOnly] = useState(false);
 
   const filteredRestaurants = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return restaurants.filter((r) => {
+    const list = restaurants.filter((r) => {
       const zoneMatch = activeZone === "all" || r.zone === activeZone;
       const cuisineMatch = restaurantMatchesCuisine(r.foodType, activeCuisine);
       const searchMatch =
         !query ||
         r.name.toLowerCase().includes(query) ||
         r.foodType.toLowerCase().includes(query);
-      return zoneMatch && cuisineMatch && searchMatch;
+      const openMatch = !openNowOnly || isRestaurantOpenNow(r);
+      return zoneMatch && cuisineMatch && searchMatch && openMatch;
     });
-  }, [activeZone, activeCuisine, search]);
+    return sortRestaurants(list, sortBy);
+  }, [activeZone, activeCuisine, search, sortBy, openNowOnly]);
 
   const zonesToShow =
     activeZone === "all"
       ? deliveryZones
       : deliveryZones.filter((z) => z.id === activeZone);
+
+  const showGrouped =
+    activeZone === "all" && !search && !activeCuisine && !openNowOnly && sortBy === "nearest";
 
   return (
     <>
@@ -66,7 +110,6 @@ export function OrderBrowse() {
         </div>
       </section>
 
-      {/* Sticky filters */}
       <div className="sticky top-[57px] z-30 border-b border-eat-border bg-white/95 backdrop-blur">
         <div className="mx-auto max-w-6xl space-y-3 px-4 py-3">
           <div className="relative">
@@ -87,6 +130,32 @@ export function OrderBrowse() {
               className="tap-target w-full rounded-2xl border border-eat-border bg-eat-soft py-3 pl-10 pr-4 text-sm text-eat-ink placeholder:text-eat-muted focus:border-eat-blue focus:outline-none focus:ring-2 focus:ring-eat-blue/20"
             />
           </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="tap-target rounded-full border border-eat-border bg-white px-3 py-2 text-xs font-semibold text-eat-ink focus:border-eat-blue focus:outline-none"
+              aria-label="Sort restaurants"
+            >
+              <option value="nearest">Nearest</option>
+              <option value="fastest">Fastest</option>
+              <option value="rating">Top rated</option>
+              <option value="favorites">Favorites first</option>
+            </select>
+            <button
+              type="button"
+              onClick={() => setOpenNowOnly((v) => !v)}
+              className={`tap-target rounded-full px-3.5 py-2 text-xs font-semibold transition ${
+                openNowOnly
+                  ? "bg-green-600 text-white"
+                  : "border border-eat-border bg-eat-soft text-eat-ink hover:border-green-600/40"
+              }`}
+            >
+              Open now
+            </button>
+          </div>
+
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
             <ZoneChip
               label="All zones"
@@ -108,7 +177,6 @@ export function OrderBrowse() {
               );
             })}
           </div>
-          {/* Cuisine chips — Grub FilterView pattern */}
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
             <FilterChip
               label="All cuisines"
@@ -132,20 +200,35 @@ export function OrderBrowse() {
       <section className="eat-section pt-6 space-y-12">
         <div className="mx-auto max-w-6xl px-4 space-y-12">
           <OrderHistoryPanel />
-          {activeZone === "all" && !search && !activeCuisine && (
+          {activeZone === "all" && !search && !activeCuisine && !openNowOnly && (
             <PopularNearYou compact />
           )}
 
           {filteredRestaurants.length === 0 ? (
             <div className="py-12 text-center">
-              <p className="text-lg font-semibold text-eat-ink">No restaurants found</p>
+              <EmptyRestaurantsIllustration />
+              <p className="mt-4 text-lg font-semibold text-eat-ink">No restaurants found</p>
               <p className="mt-2 text-sm text-eat-muted">
-                Try a different search or zone filter.
+                {openNowOnly
+                  ? "Nothing open right now. Try turning off the Open now filter."
+                  : "Try a different search or zone filter."}
               </p>
+              {openNowOnly && (
+                <button
+                  type="button"
+                  onClick={() => setOpenNowOnly(false)}
+                  className="mt-4 text-sm font-semibold text-eat-blue tap-target"
+                >
+                  Show all restaurants
+                </button>
+              )}
             </div>
-          ) : activeZone === "all" && !search && !activeCuisine ? (
+          ) : showGrouped ? (
             zonesToShow.map((zone) => {
-              const zoneRestaurants = getRestaurantsByZone(zone.id);
+              const zoneRestaurants = sortRestaurants(
+                getRestaurantsByZone(zone.id),
+                sortBy
+              );
               if (zoneRestaurants.length === 0) return null;
 
               return (
@@ -164,7 +247,13 @@ export function OrderBrowse() {
                   ? `${filteredRestaurants.length} results`
                   : deliveryZones.find((z) => z.id === activeZone)?.label ?? ""
               }
-              subtitle={search ? `Matching "${search}"` : undefined}
+              subtitle={
+                search
+                  ? `Matching "${search}"`
+                  : openNowOnly
+                    ? "Open for delivery now"
+                    : undefined
+              }
               restaurants={filteredRestaurants}
             />
           )}
@@ -236,7 +325,7 @@ function RestaurantGrid({
 }: {
   title: string;
   subtitle?: string;
-  restaurants: ReturnType<typeof getRestaurantsByZone>;
+  restaurants: Restaurant[];
 }) {
   return (
     <div className="animate-fade-in">

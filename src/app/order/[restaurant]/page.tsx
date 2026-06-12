@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { CartPanel } from "@/components/order/CartPanel";
 import { MenuCategoryNav } from "@/components/order/MenuCategoryNav";
+import { RestaurantAbout, RestaurantInfoBar } from "@/components/order/RestaurantAbout";
 import { useCart } from "@/context/CartContext";
 import { getMenuByRestaurant } from "@/data/menuItems";
 import { getRestaurantById } from "@/data/restaurants";
@@ -87,8 +88,11 @@ export default function RestaurantMenuPage() {
         </div>
       </section>
 
+      <RestaurantInfoBar restaurant={restaurant} />
+
       <section className="eat-section pt-6">
         <div className="mx-auto max-w-6xl px-4">
+          <RestaurantAbout restaurant={restaurant} />
           <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
             <MenuCategoryNav sections={menuSections} restaurantImage={imageSrc} />
             <CartPanel />

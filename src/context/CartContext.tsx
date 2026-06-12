@@ -20,6 +20,8 @@ import {
   validateDeliveryAddress,
 } from "@/lib/delivery-address";
 import { generateOrderId, persistLastOrder } from "@/lib/order-tracking";
+import { applyPromoCode } from "@/lib/promo-codes";
+import { addNotification } from "@/lib/notifications";
 
 const CART_STORAGE_KEY = "eat76-cart";
 const ADDRESS_STORAGE_KEY = "eat76-delivery-address";
@@ -37,6 +39,9 @@ export type PlacedOrder = {
   total: number;
   savings: number;
   placedAt: string;
+  orderNotes?: string;
+  deliverySchedule?: string;
+  promoDiscount?: number;
 };
 
 type StoredCart = {
@@ -45,6 +50,9 @@ type StoredCart = {
   items: CartItem[];
   tip: number;
   deliveryAddress?: string;
+  orderNotes?: string;
+  deliverySchedule?: string;
+  promoCode?: string;
 };
 
 type AddItemInput = Omit<CartItem, "quantity"> & { quantity?: number };
@@ -69,6 +77,16 @@ type CartContextValue = {
   setDeliveryAddress: (address: string) => void;
   deliveryAddressValid: boolean;
   deliveryAddressError: string | null;
+  orderNotes: string;
+  setOrderNotes: (notes: string) => void;
+  deliverySchedule: string;
+  setDeliverySchedule: (schedule: string) => void;
+  promoCode: string;
+  setPromoCode: (code: string) => void;
+  promoDiscount: number;
+  promoMessage: string | null;
+  customTipMode: boolean;
+  setCustomTipMode: (custom: boolean) => void;
   subtotal: number;
   serviceFee: number;
   deliveryFee: number;
@@ -158,6 +176,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [deliveryAddress, setDeliveryAddressState] = useState(
     DEFAULT_DELIVERY_ADDRESS
   );
+  const [orderNotes, setOrderNotesState] = useState("");
+  const [deliverySchedule, setDeliveryScheduleState] = useState("asap");
+  const [promoCode, setPromoCodeState] = useState("");
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoMessage, setPromoMessage] = useState<string | null>(null);
+  const [customTipMode, setCustomTipMode] = useState(false);
   const [isCartOpen, setCartOpen] = useState(false);
   const [cartPulse, setCartPulse] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -181,6 +205,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       } else {
         setDeliveryAddressState(loadDeliveryAddress());
       }
+      if (stored.orderNotes) setOrderNotesState(stored.orderNotes);
+      if (stored.deliverySchedule) setDeliveryScheduleState(stored.deliverySchedule);
+      if (stored.promoCode) {
+        setPromoCodeState(stored.promoCode);
+        const result = applyPromoCode(stored.promoCode, SERVICE_FEE);
+        setPromoDiscount(result.valid ? result.discount : 0);
+        setPromoMessage(result.valid ? result.message : null);
+      }
     } else {
       setDeliveryAddressState(loadDeliveryAddress());
     }
@@ -198,10 +230,44 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const setOrderNotes = useCallback((notes: string) => {
+    setOrderNotesState(notes);
+  }, []);
+
+  const setDeliverySchedule = useCallback((schedule: string) => {
+    setDeliveryScheduleState(schedule);
+  }, []);
+
+  const setPromoCode = useCallback((code: string) => {
+    setPromoCodeState(code);
+    const result = applyPromoCode(code, SERVICE_FEE);
+    setPromoDiscount(result.valid ? result.discount : 0);
+    setPromoMessage(result.valid ? result.message : result.message || null);
+  }, []);
+
   useEffect(() => {
     if (!hydrated) return;
-    saveCart({ restaurantId, restaurantName, items, tip, deliveryAddress });
-  }, [restaurantId, restaurantName, items, tip, deliveryAddress, hydrated]);
+    saveCart({
+      restaurantId,
+      restaurantName,
+      items,
+      tip,
+      deliveryAddress,
+      orderNotes,
+      deliverySchedule,
+      promoCode,
+    });
+  }, [
+    restaurantId,
+    restaurantName,
+    items,
+    tip,
+    deliveryAddress,
+    orderNotes,
+    deliverySchedule,
+    promoCode,
+    hydrated,
+  ]);
 
   const triggerPulse = useCallback(() => {
     setCartPulse(true);
@@ -279,7 +345,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [items]
   );
 
-  const serviceFee = items.length > 0 ? SERVICE_FEE : 0;
+  const serviceFee = items.length > 0 ? Math.max(0, SERVICE_FEE - promoDiscount) : 0;
   const deliveryFee = items.length > 0 ? DELIVERY_FEE : 0;
   const total = subtotal + serviceFee + deliveryFee + tip;
 
@@ -304,14 +370,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
       total,
       savings: comparison.savings,
       placedAt: new Date().toISOString(),
+      orderNotes: orderNotes.trim() || undefined,
+      deliverySchedule: deliverySchedule === "asap" ? "ASAP" : deliverySchedule,
+      promoDiscount: promoDiscount > 0 ? promoDiscount : undefined,
     };
 
     savePlacedOrder(order);
+    addNotification({
+      title: `${restaurantName} order placed`,
+      message: "Your order was placed successfully.",
+      createdAt: new Date().toISOString(),
+      type: "order",
+      orderId: order.id,
+    });
     setItems([]);
     setCartOpen(false);
     setRestaurantId(null);
     setRestaurantName(null);
     setTip(4);
+    setOrderNotesState("");
+    setDeliveryScheduleState("asap");
+    setCustomTipMode(false);
 
     return order;
   }, [
@@ -324,6 +403,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     tip,
     total,
     deliveryAddress,
+    orderNotes,
+    deliverySchedule,
+    promoDiscount,
   ]);
 
   const value = useMemo(
@@ -347,6 +429,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setDeliveryAddress,
       deliveryAddressValid: addressValidation.valid,
       deliveryAddressError: addressValidation.message,
+      orderNotes,
+      setOrderNotes,
+      deliverySchedule,
+      setDeliverySchedule,
+      promoCode,
+      setPromoCode,
+      promoDiscount,
+      promoMessage,
+      customTipMode,
+      setCustomTipMode,
       subtotal,
       serviceFee,
       deliveryFee,
@@ -372,6 +464,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setDeliveryAddress,
       addressValidation.valid,
       addressValidation.message,
+      orderNotes,
+      setOrderNotes,
+      deliverySchedule,
+      setDeliverySchedule,
+      promoCode,
+      setPromoCode,
+      promoDiscount,
+      promoMessage,
+      customTipMode,
+      setCustomTipMode,
       subtotal,
       serviceFee,
       deliveryFee,

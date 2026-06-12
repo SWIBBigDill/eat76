@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { PWARegister } from "@/components/pwa/PWARegister";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,10 +39,23 @@ export const metadata: Metadata = {
     title: "Eat76",
     statusBarStyle: "default",
   },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "default",
+    "apple-mobile-web-app-title": "Eat76",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1e4fd6",
+  themeColor: "#0047BA",
   width: "device-width",
   initialScale: 1,
 };
@@ -53,7 +68,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          {children}
+          <PWARegister />
+          <InstallPrompt />
+        </CartProvider>
       </body>
     </html>
   );

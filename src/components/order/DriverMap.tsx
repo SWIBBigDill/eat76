@@ -14,6 +14,13 @@ type DriverMapProps = {
 
 const MAP_BBOX = "-75.715,39.844,-75.702,39.851";
 
+function baseProgressFor(status: OrderTrackStatus) {
+  if (status === "delivered") return 100;
+  if (status === "on_the_way") return 65;
+  if (status === "driver_picked_up") return 25;
+  return 10;
+}
+
 export function DriverMap({
   status,
   driverName,
@@ -23,21 +30,25 @@ export function DriverMap({
   collapsible = true,
 }: DriverMapProps) {
   const [expanded, setExpanded] = useState(!collapsible);
-  const [dotProgress, setDotProgress] = useState(0);
+  const [dotProgress, setDotProgress] = useState(() => baseProgressFor(status));
   const showDriver =
     status === "driver_picked_up" || status === "on_the_way" || status === "delivered";
 
   useEffect(() => {
-    const base =
-      status === "delivered" ? 100 : status === "on_the_way" ? 65 : status === "driver_picked_up" ? 25 : 10;
-    setDotProgress(base);
+    const base = baseProgressFor(status);
+    const frame = requestAnimationFrame(() => setDotProgress(base));
 
-    if (!showDriver || status === "delivered") return;
+    if (!showDriver || status === "delivered") {
+      return () => cancelAnimationFrame(frame);
+    }
 
     const interval = window.setInterval(() => {
       setDotProgress((p) => Math.min(95, p + 2));
     }, 4000);
-    return () => window.clearInterval(interval);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearInterval(interval);
+    };
   }, [status, showDriver]);
 
   const mapContent = (
