@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { OrderTracker } from "@/components/order/OrderTracker";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import type { PlacedOrder } from "@/context/CartContext";
 import { loadOrderById } from "@/lib/order-tracking";
 
 function formatMoney(value: number) {
@@ -17,24 +16,7 @@ function formatMoney(value: number) {
 export default function TrackOrderPage() {
   const params = useParams();
   const orderId = params.id as string;
-  const [order, setOrder] = useState<PlacedOrder | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setOrder(loadOrderById(orderId));
-    setLoading(false);
-  }, [orderId]);
-
-  if (loading) {
-    return (
-      <PageShell className="pb-20 md:pb-0">
-        <div className="mx-auto max-w-lg px-4 py-16 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-eat-blue border-t-transparent" />
-          <p className="mt-4 text-sm text-eat-muted">Loading order…</p>
-        </div>
-      </PageShell>
-    );
-  }
+  const order = useMemo(() => loadOrderById(orderId), [orderId]);
 
   if (!order) {
     return (

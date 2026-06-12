@@ -10,6 +10,10 @@ import { isStripeClientConfigured } from "@/lib/stripe/client";
 
 const TIP_OPTIONS = [0, 2, 4, 6, 8];
 
+function redirectToUrl(url: string) {
+  globalThis.location.assign(url);
+}
+
 function formatMoney(value: number) {
   return `$${value.toFixed(2)}`;
 }
@@ -71,7 +75,7 @@ export function CartPanel() {
           return;
         }
 
-        window.location.href = data.url;
+        redirectToUrl(data.url);
       } catch {
         setCheckoutError("Network error — placing demo order instead.");
         placeDemoOrder();

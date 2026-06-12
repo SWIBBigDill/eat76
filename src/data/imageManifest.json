@@ -29,8 +29,9 @@
     "source": "https://static.wixstatic.com/media/28a3f5_b865b2d9144c4033a8d4a28b252d9973~mv2.jpg/v1/fill/w_307,h_454,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/lettys-cocktail_JPG.jpg"
   },
   "michoacana-grill": {
-    "hero": "/restaurants/michoacana-grill/hero.svg",
-    "status": "placeholder"
+    "hero": "/restaurants/michoacana-grill/hero.jpg",
+    "status": "ok",
+    "source": "https://img1.wsimg.com/isteam/ip/d83a97bd-def3-4023-aa9b-91a8e20d0d54/334330.jpg"
   },
   "la-michoacana-ice-cream": {
     "hero": "/restaurants/la-michoacana-ice-cream/hero.svg",

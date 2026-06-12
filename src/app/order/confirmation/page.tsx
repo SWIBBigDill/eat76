@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { OrderTracker } from "@/components/order/OrderTracker";
@@ -14,11 +14,7 @@ function formatMoney(value: number) {
 }
 
 export default function OrderConfirmationPage() {
-  const [order, setOrder] = useState<PlacedOrder | null>(null);
-
-  useEffect(() => {
-    setOrder(loadPlacedOrder());
-  }, []);
+  const [order] = useState<PlacedOrder | null>(() => loadPlacedOrder());
 
   if (!order) {
     return (

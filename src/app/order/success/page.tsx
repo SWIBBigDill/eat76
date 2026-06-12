@@ -2,42 +2,37 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { PlacedOrder } from "@/context/CartContext";
 import { loadLastOrder } from "@/lib/order-tracking";
 
+function resolveOrder(orderId: string | null): PlacedOrder | null {
+  const last = loadLastOrder();
+  if (last) return last;
+  if (!orderId) return null;
+  return {
+    id: orderId,
+    restaurantId: "",
+    restaurantName: "Your restaurant",
+    items: [],
+    subtotal: 0,
+    serviceFee: 1.76,
+    deliveryFee: 4.76,
+    tip: 0,
+    total: 0,
+    savings: 0,
+    placedAt: new Date().toISOString(),
+  };
+}
+
 export default function OrderSuccessPage() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const orderId = searchParams.get("order_id");
-  const [order, setOrder] = useState<PlacedOrder | null>(null);
-
-  useEffect(() => {
-    const last = loadLastOrder();
-    if (last) {
-      setOrder(last);
-      return;
-    }
-    if (orderId) {
-      setOrder({
-        id: orderId,
-        restaurantId: "",
-        restaurantName: "Your restaurant",
-        items: [],
-        subtotal: 0,
-        serviceFee: 1.76,
-        deliveryFee: 4.76,
-        tip: 0,
-        total: 0,
-        savings: 0,
-        placedAt: new Date().toISOString(),
-      });
-    }
-  }, [orderId]);
-
+  const order = useMemo(() => resolveOrder(orderId), [orderId]);
   const trackId = order?.id ?? orderId;
 
   return (

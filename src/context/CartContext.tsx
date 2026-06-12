@@ -121,6 +121,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const stored = loadCart();
     if (stored) {
+      // Hydrate cart from localStorage after client mount (avoids SSR mismatch)
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional one-time hydration
       setRestaurantId(stored.restaurantId);
       setRestaurantName(stored.restaurantName);
       setItems(stored.items);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { MockLoginBanner } from "@/components/ui/MockLoginBanner";
 import { Button } from "@/components/ui/Button";
@@ -31,15 +31,11 @@ export default function DriverDashboardPage() {
   const active = deliveries.filter((d) => d.status !== "delivered");
   const completed = deliveries.filter((d) => d.status === "delivered");
 
-  const earningsToday = useMemo(() => {
-    return deliveries
-      .filter((d) => d.status === "delivered" || d.status === "picked_up" || d.status === "claimed")
-      .reduce((sum, d) => sum + d.basePay + (d.status === "delivered" ? d.tip : 0), 0);
-  }, [deliveries]);
+  const earningsToday = deliveries
+    .filter((d) => d.status === "delivered" || d.status === "picked_up" || d.status === "claimed")
+    .reduce((sum, d) => sum + d.basePay + (d.status === "delivered" ? d.tip : 0), 0);
 
-  const completedEarnings = useMemo(() => {
-    return completed.reduce((sum, d) => sum + d.basePay + d.tip, 0);
-  }, [completed]);
+  const completedEarnings = completed.reduce((sum, d) => sum + d.basePay + d.tip, 0);
 
   const advanceDelivery = (id: string) => {
     setDeliveries((prev) =>
