@@ -22,28 +22,22 @@ The full loop works today: place an order on /order, watch it appear on
 /restaurant-dashboard, advance it (Accept, Preparing, Ready), pick it up on
 /driver-dashboard, and the customer track page follows along in real time.
 
+## Stripe: LIVE (completed June 12, 2026)
+
+Live keys for account `acct_1TFcBUIndviBR6LR` are set in Vercel:
+`STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`,
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and `STRIPE_WEBHOOK_SECRET`.
+
+Production webhook endpoint `we_1ThbW7IndviBR6LRRfNES6c8` is enabled at
+`https://eat76.vercel.app/api/stripe/webhook` for `checkout.session.completed`
+and `account.updated`. Live checkout session creation is verified working.
+
+Note: these are LIVE keys. Checkout charges real cards. The Connect button on
+/restaurants creates real connected accounts.
+
 ## Remaining manual steps (need account owner access)
 
-### 1. Stripe keys (10 minutes) - unlocks real payments
-
-The Stripe account (SWIB, `acct_1TFcBUIndviBR6LR`) is connected, but secret
-keys can only be copied from the dashboard:
-
-1. Open https://dashboard.stripe.com/acct_1TFcBUIndviBR6LR/apikeys
-2. Copy the test secret key (`sk_test_...`) and publishable key (`pk_test_...`)
-3. Add to Vercel:
-   - `STRIPE_SECRET_KEY`
-   - `STRIPE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-4. Create a webhook endpoint at https://dashboard.stripe.com/webhooks:
-   - URL: `https://eat76.vercel.app/api/stripe/webhook`
-   - Events: `checkout.session.completed`, `account.updated`
-   - Copy the signing secret into Vercel as `STRIPE_WEBHOOK_SECRET`
-
-Once set, checkout switches from demo mode to real Stripe Checkout
-automatically, and the Connect onboarding button on /restaurants creates real
-connected accounts (Phase 1, step 4).
-
-### 2. Supabase auth + secret key (5 minutes)
+### 1. Supabase auth + secret key (5 minutes)
 
 1. Open https://supabase.com/dashboard/project/acnjhuznxwquxaaflmrm/auth/url-configuration
    - Site URL: `https://eat76.vercel.app`
@@ -54,7 +48,7 @@ connected accounts (Phase 1, step 4).
    (The app works without it through scoped RPCs, but the secret key gives the
    server full access and is the production-correct setup.)
 
-### 3. Email notifications (optional, 10 minutes)
+### 2. Email notifications (optional, 10 minutes)
 
 1. Create a free account at https://resend.com
 2. Add `RESEND_API_KEY` to Vercel
@@ -62,7 +56,7 @@ connected accounts (Phase 1, step 4).
 
 Order confirmation and delivery emails start sending automatically.
 
-### 4. Business steps (the real work)
+### 3. Business steps (the real work)
 
 - Sign 5-10 restaurants in 19348; replace template menus with verified ones
 - Onboard each signed restaurant through Stripe Connect (button on /restaurants)
