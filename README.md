@@ -83,6 +83,24 @@ npm run fetch-assets   # refreshes public/restaurants/* and imageManifest.json
 - **Checkout savings** — side-by-side comparison vs typical big-app fees (~15% markup + delivery + service) via `calculateCustomerCheckoutComparison()` in `src/lib/pricing.ts`
 - **Micro-interactions** — add-to-cart feedback, cart badge pulse, slide-up cart sheet, `prefers-reduced-motion` support
 
+## Stripe (Checkout + Connect)
+
+Architecture and fee split: `src/lib/stripe/README.md`. Step-by-step Dashboard setup: **`docs/STRIPE_SETUP.md`**.
+
+### Environment variables (Vercel + `.env.local`)
+
+Copy `.env.example` → `.env.local` for local dev. Add the same vars in [Vercel project settings](https://vercel.com/so-when-it-be-32c132f5/eat76/settings/environment-variables):
+
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `STRIPE_SECRET_KEY` | For live checkout | `sk_test_...` or restricted `rk_test_...` |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | For client detection | `pk_test_...` |
+| `STRIPE_WEBHOOK_SECRET` | For webhooks | From endpoint `https://eat76.vercel.app/api/stripe/webhook` |
+| `NEXT_PUBLIC_APP_URL` | Recommended | `https://eat76.vercel.app` in production |
+| `NEXT_PUBLIC_STRIPE_ENABLED` | Optional | Set `false` to keep demo mode after keys exist |
+
+Without keys, checkout and Connect stay in **demo mode** (localStorage/sessionStorage). Restaurant Connect demo: **Connect Stripe (Restaurant Demo)** on `/restaurants`.
+
 ## Future integrations
 
-See `src/lib/integrations.ts` and `TODO` comments throughout the codebase for Supabase and Stripe hooks.
+See `src/lib/integrations.ts` and `TODO` comments throughout the codebase for Supabase hooks.

@@ -1,6 +1,7 @@
 import { RestaurantSavingsCalculator } from "@/components/calculators/RestaurantSavingsCalculator";
 import { EarlyAccessForm } from "@/components/forms/EarlyAccessForm";
 import { PageShell } from "@/components/layout/PageShell";
+import { StripeConnectOnboardButton } from "@/components/stripe/StripeConnectOnboardButton";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -77,9 +78,10 @@ export default function RestaurantsPage() {
                 title="Built with restaurants"
                 subtitle="Freedom from the big food delivery apps. Independent restaurant owned. Better transparency. Local drivers loyal to the market."
               />
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap items-start gap-3">
                 <Button href="/restaurant-dashboard">Restaurant Dashboard Demo</Button>
                 <Button href="/pricing" variant="outline">View all pricing</Button>
+                <StripeConnectOnboardButton />
               </div>
             </div>
             <EarlyAccessForm type="restaurant" />

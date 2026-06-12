@@ -1,10 +1,11 @@
 import Stripe from "stripe";
 import { EAT76_BUSINESS_NAME } from "./constants";
+import { isStripeEnabled } from "./config";
 
 let stripeClient: Stripe | null = null;
 
 export function isStripeServerConfigured(): boolean {
-  return Boolean(process.env.STRIPE_SECRET_KEY);
+  return isStripeEnabled() && Boolean(process.env.STRIPE_SECRET_KEY);
 }
 
 export function getStripe(): Stripe {
