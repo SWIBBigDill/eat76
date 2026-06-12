@@ -1,11 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { useCart } from "@/context/CartContext";
+import { isStripeClientConfigured } from "@/lib/stripe/client";
 
 const TIP_OPTIONS = [0, 2, 4, 6, 8];
 
@@ -16,6 +17,7 @@ function formatMoney(value: number) {
 export function CartPanel() {
   const {
     items,
+    restaurantId,
     restaurantName,
     subtotal,
     serviceFee,
@@ -31,6 +33,9 @@ export function CartPanel() {
     placeOrder,
   } = useCart();
   const router = useRouter();
+  const stripeEnabled = isStripeClientConfigured();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   useEffect(() => {
     if (itemCount === 0) setCartOpen(false);
@@ -38,9 +43,49 @@ export function CartPanel() {
 
   if (itemCount === 0) return null;
 
-  function handlePlaceOrder() {
-    const order = placeOrder();
-    if (order) router.push("/order/confirmation");
+  async function handlePlaceOrder() {
+    if (!stripeEnabled) {
+      const order = placeOrder();
+      if (order) router.push("/order/confirmation");
+      return;
+    }
+
+    if (!restaurantId || !restaurantName) {
+      setCheckoutError("Restaurant information is missing.");
+      return;
+    }
+
+    setCheckoutLoading(true);
+    setCheckoutError(null);
+
+    try {
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          restaurantId,
+          restaurantName,
+          items,
+          subtotal,
+          serviceFee,
+          deliveryFee,
+          tip,
+          total,
+        }),
+      });
+
+      const data = (await response.json()) as { url?: string; error?: string };
+      if (!response.ok || !data.url) {
+        throw new Error(data.error ?? "Could not start checkout.");
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      setCheckoutError(
+        error instanceof Error ? error.message : "Checkout failed. Try again."
+      );
+      setCheckoutLoading(false);
+    }
   }
 
   return (
@@ -59,29 +104,11 @@ export function CartPanel() {
           updateQuantity={updateQuantity}
           clearCart={clearCart}
           onPlaceOrder={handlePlaceOrder}
+          stripeEnabled={stripeEnabled}
+          checkoutLoading={checkoutLoading}
+          checkoutError={checkoutError}
         />
       </Card>
-
-      {/* Mobile collapsed bar */}
-      <div className="fixed inset-x-0 z-40 border-t border-eat-border bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:hidden bottom-[calc(3.5rem+env(safe-area-inset-bottom))]">
-        {!isCartOpen && (
-          <button
-            type="button"
-            onClick={() => setCartOpen(true)}
-            className="flex w-full items-center justify-between gap-4 px-4 py-3.5 tap-target"
-          >
-            <div className="text-left">
-              <p className="text-sm font-semibold text-eat-ink">
-                Cart · {itemCount} item{itemCount !== 1 ? "s" : ""}
-              </p>
-              <p className="text-lg font-bold text-eat-blue">{formatMoney(total)}</p>
-            </div>
-            <span className="rounded-xl bg-eat-blue px-4 py-2 text-sm font-bold text-white">
-              View cart
-            </span>
-          </button>
-        )}
-      </div>
 
       {/* Mobile slide-up sheet */}
       {isCartOpen && (
@@ -109,6 +136,9 @@ export function CartPanel() {
                 updateQuantity={updateQuantity}
                 clearCart={clearCart}
                 onPlaceOrder={handlePlaceOrder}
+                stripeEnabled={stripeEnabled}
+                checkoutLoading={checkoutLoading}
+                checkoutError={checkoutError}
                 compact
               />
             </div>
@@ -131,6 +161,9 @@ type CartContentProps = {
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
   onPlaceOrder: () => void;
+  stripeEnabled: boolean;
+  checkoutLoading: boolean;
+  checkoutError: string | null;
   compact?: boolean;
 };
 
@@ -146,6 +179,9 @@ function CartContent({
   updateQuantity,
   clearCart,
   onPlaceOrder,
+  stripeEnabled,
+  checkoutLoading,
+  checkoutError,
   compact,
 }: CartContentProps) {
   return (
@@ -234,9 +270,28 @@ function CartContent({
         Delivery supports local driver pay. Service keeps Eat76 operating locally. Tips go 100% to your driver.
       </p>
 
-      <Button className="w-full tap-target" onClick={onPlaceOrder}>
-        Place Order (Demo)
+      {checkoutError && (
+        <p className="text-sm text-eat-red" role="alert">
+          {checkoutError}
+        </p>
+      )}
+
+      <Button
+        className="w-full tap-target"
+        onClick={onPlaceOrder}
+        disabled={checkoutLoading}
+      >
+        {checkoutLoading
+          ? "Redirecting to checkout…"
+          : stripeEnabled
+            ? "Place Order"
+            : "Place Order (Demo)"}
       </Button>
+      {!stripeEnabled && (
+        <p className="text-xs text-eat-muted">
+          Demo mode — set Stripe keys in .env.local to enable payments.
+        </p>
+      )}
       <Button variant="ghost" className="w-full text-sm tap-target" onClick={clearCart}>
         Clear cart
       </Button>

@@ -1,8 +1,8 @@
 /**
- * Future integration stubs for Eat76 MVP.
+ * Integration map for Eat76 MVP.
  *
- * TODO: Supabase — configure client in lib/supabase/client.ts and server.ts
- * TODO: Stripe — configure checkout in lib/stripe.ts
+ * Stripe: see src/lib/stripe/README.md for architecture, OSS references, and setup.
+ * Supabase: planned for orders, auth, and real-time status.
  */
 
 export const INTEGRATION_NOTES = {
@@ -13,8 +13,10 @@ export const INTEGRATION_NOTES = {
     "Supabase Auth for restaurant/driver/admin roles",
   ],
   stripe: [
-    "Checkout Session for customer orders",
-    "Connect for restaurant payouts",
-    "Webhook handlers for payment confirmation",
+    "Platform account: Eat76 (dashboard.stripe.com) — not a separate sub-account",
+    "Checkout Session: POST /api/stripe/checkout",
+    "Connect Accounts v2 (recipient): POST /api/stripe/connect/onboard",
+    "Webhooks: POST /api/stripe/webhook (checkout.session.completed)",
+    "metadata.platform = eat76 on all Stripe objects",
   ],
 } as const;
