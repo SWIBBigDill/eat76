@@ -41,6 +41,8 @@ type StoredCart = {
   tip: number;
 };
 
+type AddItemInput = Omit<CartItem, "quantity"> & { quantity?: number };
+
 type CartContextValue = {
   restaurantId: string | null;
   restaurantName: string | null;
@@ -49,9 +51,9 @@ type CartContextValue = {
   isCartOpen: boolean;
   cartPulse: boolean;
   setRestaurant: (id: string, name: string) => void;
-  addItem: (item: Omit<CartItem, "quantity">) => void;
-  removeItem: (menuItemId: string) => void;
-  updateQuantity: (menuItemId: string, quantity: number) => void;
+  addItem: (item: AddItemInput) => void;
+  removeItem: (lineId: string) => void;
+  updateQuantity: (lineId: string, quantity: number) => void;
   setTip: (tip: number) => void;
   setCartOpen: (open: boolean) => void;
   clearCart: () => void;
@@ -66,12 +68,24 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
+function normalizeCartItem(item: CartItem): CartItem {
+  return {
+    ...item,
+    lineId: item.lineId ?? item.menuItemId,
+    basePrice: item.basePrice ?? item.price,
+  };
+}
+
 function loadCart(): StoredCart | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(CART_STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as StoredCart;
+    const parsed = JSON.parse(raw) as StoredCart;
+    return {
+      ...parsed,
+      items: parsed.items.map(normalizeCartItem),
+    };
   } catch {
     return null;
   }
@@ -103,7 +117,11 @@ export function loadPlacedOrder(): PlacedOrder | null {
       sessionStorage.getItem(ORDER_STORAGE_KEY) ??
       localStorage.getItem("eat76-last-order");
     if (!raw) return null;
-    return JSON.parse(raw) as PlacedOrder;
+    const parsed = JSON.parse(raw) as PlacedOrder;
+    return {
+      ...parsed,
+      items: parsed.items.map(normalizeCartItem),
+    };
   } catch {
     return null;
   }
@@ -148,17 +166,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addItem = useCallback(
-    (item: Omit<CartItem, "quantity">) => {
+    (item: AddItemInput) => {
+      const qty = item.quantity ?? 1;
+      const lineId = item.lineId ?? item.menuItemId;
       setItems((prev) => {
-        const existing = prev.find((i) => i.menuItemId === item.menuItemId);
+        const existing = prev.find((i) => i.lineId === lineId);
         if (existing) {
           return prev.map((i) =>
-            i.menuItemId === item.menuItemId
-              ? { ...i, quantity: i.quantity + 1 }
+            i.lineId === lineId
+              ? { ...i, quantity: i.quantity + qty }
               : i
           );
         }
-        return [...prev, { ...item, quantity: 1 }];
+        return [
+          ...prev,
+          normalizeCartItem({ ...item, lineId, quantity: qty }),
+        ];
       });
       triggerPulse();
       setCartOpen(true);
@@ -166,17 +189,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [triggerPulse]
   );
 
-  const removeItem = useCallback((menuItemId: string) => {
-    setItems((prev) => prev.filter((i) => i.menuItemId !== menuItemId));
+  const removeItem = useCallback((lineId: string) => {
+    setItems((prev) => prev.filter((i) => i.lineId !== lineId));
   }, []);
 
-  const updateQuantity = useCallback((menuItemId: string, quantity: number) => {
+  const updateQuantity = useCallback((lineId: string, quantity: number) => {
     if (quantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.menuItemId !== menuItemId));
+      setItems((prev) => prev.filter((i) => i.lineId !== lineId));
       return;
     }
     setItems((prev) =>
-      prev.map((i) => (i.menuItemId === menuItemId ? { ...i, quantity } : i))
+      prev.map((i) => (i.lineId === lineId ? { ...i, quantity } : i))
     );
   }, []);
 

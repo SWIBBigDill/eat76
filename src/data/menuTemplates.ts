@@ -2,6 +2,7 @@ export type MenuTemplateItem = {
   name: string;
   description: string;
   basePrice: number;
+  optionGroups?: import("@/lib/types").MenuOptionGroup[];
 };
 
 export type CuisineKey =
@@ -150,24 +151,6 @@ export const cuisineTemplates: Record<CuisineKey, MenuTemplateItem[]> = {
     { name: "Soup of the Day", description: "Ask your server.", basePrice: 6 },
     { name: "Side Order", description: "Seasonal side.", basePrice: 5 },
     { name: "Fountain Drink", description: "Soft drink.", basePrice: 2.5 },
-  ],
-};
-
-/** Menu overrides from restaurant-owned sources (not delivery apps). */
-export const menuOverrides: Record<string, MenuTemplateItem[]> = {
-  "lily-asian-cuisine": [
-    { name: "Spicy Crunchy Tuna Roll", description: "Spicy tuna, crunch, scallion.", basePrice: 9 },
-    { name: "Shrimp Tempura Roll", description: "Crispy shrimp, avocado, eel sauce.", basePrice: 8 },
-    { name: "Pork Gyoza", description: "Traditional pork potstickers.", basePrice: 7.5 },
-    { name: "Lunch Bento Box", description: "Protein, rice, salad, and roll.", basePrice: 14 },
-    { name: "Crab Rangoon", description: "Crab and cream cheese, sweet chili.", basePrice: 7 },
-  ],
-  "la-verona": [
-    { name: "Antipasti Classico", description: "Cured meats, olives, marinated vegetables.", basePrice: 16 },
-    { name: "Fried Mozzarella", description: "Crispy mozzarella, marinara.", basePrice: 11 },
-    { name: "Grilled Salmon Salad", description: "Mixed greens, grilled salmon, lemon vinaigrette.", basePrice: 18 },
-    { name: "Chicken Parmigiana", description: "Breaded chicken, marinara, mozzarella.", basePrice: 22 },
-    { name: "Tiramisu", description: "Classic Italian dessert.", basePrice: 9 },
   ],
 };
 

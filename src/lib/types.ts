@@ -15,6 +15,21 @@ export type Restaurant = {
   image?: string;
 };
 
+export type MenuOptionChoice = {
+  id: string;
+  name: string;
+  priceDelta: number;
+};
+
+export type MenuOptionGroup = {
+  id: string;
+  name: string;
+  required: boolean;
+  minSelections?: number;
+  maxSelections?: number;
+  choices: MenuOptionChoice[];
+};
+
 export type MenuItem = {
   id: string;
   restaurantId: string;
@@ -22,6 +37,14 @@ export type MenuItem = {
   description: string;
   price: number;
   image?: string;
+  optionGroups?: MenuOptionGroup[];
+};
+
+export type SelectedOption = {
+  groupId: string;
+  groupName: string;
+  choiceIds: string[];
+  choiceNames: string[];
 };
 
 export type OrderStatus =
@@ -69,10 +92,14 @@ export type Driver = {
 };
 
 export type CartItem = {
+  lineId: string;
   menuItemId: string;
   name: string;
   price: number;
+  basePrice: number;
   quantity: number;
+  selectedOptions?: SelectedOption[];
+  optionSummary?: string;
 };
 
 export type EarlyAccessType = "restaurant" | "driver" | "customer";

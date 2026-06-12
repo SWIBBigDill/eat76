@@ -4,12 +4,25 @@ import { readJsonFile, writeJsonFile } from "./file-store";
 
 export type DriverLocation = { lat: number; lng: number };
 
+import type { SelectedOption } from "@/lib/types";
+
+export type StoredOrderItem = {
+  lineId: string;
+  menuItemId: string;
+  name: string;
+  price: number;
+  basePrice?: number;
+  quantity: number;
+  selectedOptions?: SelectedOption[];
+  optionSummary?: string;
+};
+
 export type StoredOrder = {
   id: string;
   sessionId?: string;
   restaurantId: string;
   restaurantName: string;
-  items: { menuItemId: string; name: string; price: number; quantity: number }[];
+  items: StoredOrderItem[];
   subtotal: number;
   serviceFee: number;
   deliveryFee: number;

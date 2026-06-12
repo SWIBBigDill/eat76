@@ -1,8 +1,5 @@
-import {
-  cuisineFromFoodType,
-  cuisineTemplates,
-  menuOverrides,
-} from "@/data/menuTemplates";
+import { cuisineFromFoodType, cuisineTemplates } from "@/data/menuTemplates";
+import { getCoreMenu, getTemplateOptionGroups } from "@/data/menus";
 import prospectsRaw from "@/data/prospects.raw.json";
 import imageManifest from "@/data/imageManifest.json";
 import type { MenuItem } from "@/lib/types";
@@ -19,9 +16,11 @@ function itemImage(restaurantId: string): string | undefined {
 }
 
 function buildMenuForRestaurant(restaurant: ProspectRow): MenuItem[] {
+  const coreMenu = getCoreMenu(restaurant.id);
+  const cuisine = cuisineFromFoodType(restaurant.foodType);
   const items =
-    menuOverrides[restaurant.id] ??
-    cuisineTemplates[cuisineFromFoodType(restaurant.foodType)];
+    coreMenu ??
+    cuisineTemplates[cuisine];
 
   const image = itemImage(restaurant.id);
 
@@ -31,6 +30,9 @@ function buildMenuForRestaurant(restaurant: ProspectRow): MenuItem[] {
     name: item.name,
     description: item.description,
     price: item.basePrice,
+    optionGroups:
+      item.optionGroups ??
+      getTemplateOptionGroups(cuisine, item.name),
     image,
   }));
 }
@@ -41,4 +43,8 @@ export const menuItems: MenuItem[] = (prospectsRaw as ProspectRow[]).flatMap(
 
 export function getMenuByRestaurant(restaurantId: string) {
   return menuItems.filter((item) => item.restaurantId === restaurantId);
+}
+
+export function getMenuItemById(itemId: string) {
+  return menuItems.find((item) => item.id === itemId);
 }

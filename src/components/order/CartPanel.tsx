@@ -172,7 +172,7 @@ type CartContentProps = {
   tip: number;
   total: number;
   setTip: (tip: number) => void;
-  updateQuantity: (id: string, qty: number) => void;
+  updateQuantity: (lineId: string, qty: number) => void;
   clearCart: () => void;
   onPlaceOrder: () => void;
   compact?: boolean;
@@ -214,13 +214,20 @@ function CartContent({
 
       <ul className="space-y-2">
         {items.map((item) => (
-          <li key={item.menuItemId} className="flex items-center justify-between gap-2 text-sm">
-            <span className="min-w-0 flex-1 truncate">{item.name}</span>
+          <li key={item.lineId} className="flex items-center justify-between gap-2 text-sm">
+            <span className="min-w-0 flex-1">
+              <span className="line-clamp-2">{item.name}</span>
+              {item.optionSummary && item.name.includes("·") === false && (
+                <span className="mt-0.5 block text-xs text-eat-muted line-clamp-1">
+                  {item.optionSummary}
+                </span>
+              )}
+            </span>
             <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
                 className="tap-target h-9 w-9 rounded-xl border border-eat-border text-eat-blue transition active:bg-eat-soft"
-                onClick={() => updateQuantity(item.menuItemId, item.quantity - 1)}
+                onClick={() => updateQuantity(item.lineId, item.quantity - 1)}
                 aria-label={`Decrease ${item.name}`}
               >
                 −
@@ -229,7 +236,7 @@ function CartContent({
               <button
                 type="button"
                 className="tap-target h-9 w-9 rounded-xl border border-eat-border text-eat-blue transition active:bg-eat-soft"
-                onClick={() => updateQuantity(item.menuItemId, item.quantity + 1)}
+                onClick={() => updateQuantity(item.lineId, item.quantity + 1)}
                 aria-label={`Increase ${item.name}`}
               >
                 +

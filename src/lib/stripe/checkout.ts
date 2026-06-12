@@ -42,7 +42,11 @@ export function buildCheckoutLineItems(
           name: item.name,
           metadata: eat76Metadata({
             menu_item_id: item.menuItemId,
+            line_id: item.lineId,
             restaurant_id: payload.restaurantId,
+            ...(item.selectedOptions?.length
+              ? { options: JSON.stringify(item.selectedOptions) }
+              : {}),
           }),
         },
         unit_amount: toCents(item.price),

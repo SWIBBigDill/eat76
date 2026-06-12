@@ -107,7 +107,7 @@ export default function OrderConfirmationPage() {
 
             <ul className="mt-4 space-y-2 border-b border-eat-border pb-4 text-sm">
               {order.items.map((item) => (
-                <li key={item.menuItemId} className="flex justify-between gap-2">
+                <li key={item.lineId} className="flex justify-between gap-2">
                   <span>
                     {item.quantity}× {item.name}
                   </span>

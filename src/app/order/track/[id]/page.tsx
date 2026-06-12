@@ -156,7 +156,7 @@ export default function TrackOrderPage() {
             <p className="text-xs text-eat-muted">{order.restaurantName}</p>
             <ul className="mt-3 space-y-1.5 text-sm">
               {order.items.map((item) => (
-                <li key={item.menuItemId} className="flex justify-between gap-2">
+                <li key={item.lineId ?? item.menuItemId} className="flex justify-between gap-2">
                   <span>
                     {item.quantity}× {item.name}
                   </span>
