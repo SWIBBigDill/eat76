@@ -30,6 +30,7 @@ function buildMenuForRestaurant(restaurant: ProspectRow): MenuItem[] {
     name: item.name,
     description: item.description,
     price: item.basePrice,
+    badges: item.badges,
     optionGroups:
       item.optionGroups ??
       getTemplateOptionGroups(cuisine, item.name),

@@ -1,4 +1,4 @@
-import type { MenuOptionGroup } from "@/lib/types";
+import type { MenuBadge, MenuOptionGroup } from "@/lib/types";
 import {
   bentoProtein,
   burgerCheese,
@@ -26,6 +26,7 @@ export type MenuSourceItem = {
   name: string;
   description: string;
   basePrice: number;
+  badges?: MenuBadge[];
   optionGroups?: MenuOptionGroup[];
 };
 
@@ -37,12 +38,14 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Spicy Crunchy Tuna Roll",
       description: "Spicy tuna, tempura crunch, scallion, sesame.",
       basePrice: 9,
+      badges: ["popular", "spicy"],
       optionGroups: [spiceLevel, sushiRollAddons],
     },
     {
       name: "Shrimp Tempura Roll",
       description: "Crispy shrimp, avocado, cucumber, eel sauce.",
       basePrice: 8,
+      badges: ["popular"],
       optionGroups: [sushiRollAddons],
     },
     {
@@ -55,6 +58,7 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Lunch Bento Box",
       description: "Choice of protein, steamed rice, salad, miso soup, and a California roll.",
       basePrice: 14,
+      badges: ["popular"],
       optionGroups: [bentoProtein],
     },
     {
@@ -132,6 +136,7 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Margherita Pizza",
       description: "San Marzano tomato, fresh mozzarella, basil, olive oil.",
       basePrice: 15,
+      badges: ["popular"],
       optionGroups: [pizzaSize, pizzaToppings],
     },
     {
@@ -418,18 +423,21 @@ export const coreMenus: Record<string, CoreMenu> = {
       name: "Pad Thai",
       description: "Rice noodles, tamarind, peanuts, bean sprouts, lime.",
       basePrice: 14,
+      badges: ["popular"],
       optionGroups: [thaiProtein, thaiSpice],
     },
     {
       name: "Green Curry",
       description: "Coconut curry, Thai basil, bell peppers, bamboo.",
       basePrice: 15,
+      badges: ["popular", "spicy"],
       optionGroups: [thaiProtein, thaiSpice],
     },
     {
       name: "Tom Yum Soup",
       description: "Spicy lemongrass broth, mushrooms, tomatoes.",
       basePrice: 8,
+      badges: ["spicy"],
       optionGroups: [
         {
           id: "protein",

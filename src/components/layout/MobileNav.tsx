@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useActiveOrder } from "@/hooks/useActiveOrder";
+import { formatEta } from "@/lib/order-tracking";
 
 const tabs = [
   {
@@ -61,6 +63,7 @@ const moreLinks = [
 export function MobileNav() {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
+  const activeOrder = useActiveOrder();
 
   const moreActive =
     pathname === "/restaurants" ||
@@ -68,12 +71,31 @@ export function MobileNav() {
     pathname === "/drivers" ||
     pathname.startsWith("/drivers/");
 
+  const trackHref = activeOrder ? `/order/track/${activeOrder.order.id}` : null;
+
   return (
     <>
       <nav
         className="fixed inset-x-0 bottom-0 z-50 border-t border-eat-border bg-white/95 backdrop-blur md:hidden safe-bottom"
         aria-label="Mobile navigation"
       >
+        {trackHref && (
+          <Link
+            href={trackHref}
+            className="mx-3 mb-1 flex min-h-[44px] items-center justify-between gap-2 rounded-full bg-eat-red px-4 py-2 text-white shadow-md transition active:scale-[0.98] tap-target animate-pulse-soft motion-reduce:animate-none"
+          >
+            <span className="flex min-w-0 items-center gap-2">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-75 motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+              </span>
+              <span className="truncate text-sm font-bold">Order in progress</span>
+            </span>
+            <span className="shrink-0 text-xs font-semibold">
+              {formatEta(activeOrder?.etaMinutes ?? 0)} →
+            </span>
+          </Link>
+        )}
         <div className="mx-auto flex max-w-lg items-end justify-around px-2 py-1">
           {tabs.map((tab) => {
             if (tab.isMore) {
@@ -136,7 +158,7 @@ export function MobileNav() {
             aria-label="Close menu"
             onClick={() => setMoreOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 animate-slide-up rounded-t-3xl bg-white pb-[calc(env(safe-area-inset-bottom)+80px)] shadow-2xl">
+          <div className="absolute inset-x-0 bottom-0 max-h-[70vh] overflow-y-auto animate-slide-up rounded-t-3xl bg-white pb-[calc(env(safe-area-inset-bottom)+80px)] shadow-2xl">
             <div className="mx-auto max-w-lg px-4 pt-4">
               <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-eat-border" />
               <p className="mb-4 text-lg font-bold text-eat-ink">Partner with Eat76</p>

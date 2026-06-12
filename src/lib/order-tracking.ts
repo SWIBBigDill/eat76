@@ -125,7 +125,7 @@ export function persistLastOrder(order: PlacedOrder) {
     const history = loadOrderHistory();
     const filtered = history.filter((o) => o.id !== order.id);
     filtered.unshift(order);
-    localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(filtered.slice(0, 20)));
+    localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(filtered.slice(0, 5)));
     saveLocalOrderStatus(order.id, "placed");
   } catch {
     /* ignore */

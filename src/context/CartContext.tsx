@@ -15,9 +15,14 @@ import {
   SERVICE_FEE,
   calculateCustomerCheckoutComparison,
 } from "@/lib/pricing";
+import {
+  DEFAULT_DELIVERY_ADDRESS,
+  validateDeliveryAddress,
+} from "@/lib/delivery-address";
 import { generateOrderId, persistLastOrder } from "@/lib/order-tracking";
 
 const CART_STORAGE_KEY = "eat76-cart";
+const ADDRESS_STORAGE_KEY = "eat76-delivery-address";
 const ORDER_STORAGE_KEY = "eat76-last-order";
 
 export type PlacedOrder = {
@@ -39,6 +44,7 @@ type StoredCart = {
   restaurantName: string | null;
   items: CartItem[];
   tip: number;
+  deliveryAddress?: string;
 };
 
 type AddItemInput = Omit<CartItem, "quantity"> & { quantity?: number };
@@ -58,6 +64,11 @@ type CartContextValue = {
   setCartOpen: (open: boolean) => void;
   clearCart: () => void;
   placeOrder: () => PlacedOrder | null;
+  reorderFromOrder: (order: PlacedOrder) => void;
+  deliveryAddress: string;
+  setDeliveryAddress: (address: string) => void;
+  deliveryAddressValid: boolean;
+  deliveryAddressError: string | null;
   subtotal: number;
   serviceFee: number;
   deliveryFee: number;
@@ -76,6 +87,17 @@ function normalizeCartItem(item: CartItem): CartItem {
   };
 }
 
+function loadDeliveryAddress(): string {
+  if (typeof window === "undefined") return DEFAULT_DELIVERY_ADDRESS;
+  try {
+    return (
+      localStorage.getItem(ADDRESS_STORAGE_KEY) ?? DEFAULT_DELIVERY_ADDRESS
+    );
+  } catch {
+    return DEFAULT_DELIVERY_ADDRESS;
+  }
+}
+
 function loadCart(): StoredCart | null {
   if (typeof window === "undefined") return null;
   try {
@@ -85,6 +107,7 @@ function loadCart(): StoredCart | null {
     return {
       ...parsed,
       items: parsed.items.map(normalizeCartItem),
+      deliveryAddress: parsed.deliveryAddress ?? loadDeliveryAddress(),
     };
   } catch {
     return null;
@@ -132,9 +155,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [restaurantName, setRestaurantName] = useState<string | null>(null);
   const [items, setItems] = useState<CartItem[]>([]);
   const [tip, setTip] = useState(4);
+  const [deliveryAddress, setDeliveryAddressState] = useState(
+    DEFAULT_DELIVERY_ADDRESS
+  );
   const [isCartOpen, setCartOpen] = useState(false);
   const [cartPulse, setCartPulse] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+
+  const addressValidation = useMemo(
+    () => validateDeliveryAddress(deliveryAddress),
+    [deliveryAddress]
+  );
 
   useEffect(() => {
     const stored = loadCart();
@@ -145,14 +176,32 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setRestaurantName(stored.restaurantName);
       setItems(stored.items);
       setTip(stored.tip);
+      if (stored.deliveryAddress) {
+        setDeliveryAddressState(stored.deliveryAddress);
+      } else {
+        setDeliveryAddressState(loadDeliveryAddress());
+      }
+    } else {
+      setDeliveryAddressState(loadDeliveryAddress());
     }
     setHydrated(true);
   }, []);
 
+  const setDeliveryAddress = useCallback((address: string) => {
+    setDeliveryAddressState(address);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(ADDRESS_STORAGE_KEY, address);
+      } catch {
+        /* ignore */
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (!hydrated) return;
-    saveCart({ restaurantId, restaurantName, items, tip });
-  }, [restaurantId, restaurantName, items, tip, hydrated]);
+    saveCart({ restaurantId, restaurantName, items, tip, deliveryAddress });
+  }, [restaurantId, restaurantName, items, tip, deliveryAddress, hydrated]);
 
   const triggerPulse = useCallback(() => {
     setCartPulse(true);
@@ -211,6 +260,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCartOpen(false);
   }, []);
 
+  const reorderFromOrder = useCallback((order: PlacedOrder) => {
+    setRestaurantId(order.restaurantId);
+    setRestaurantName(order.restaurantName);
+    setItems(order.items.map(normalizeCartItem));
+    setTip(order.tip);
+    setCartOpen(true);
+    triggerPulse();
+  }, [triggerPulse]);
+
   const subtotal = useMemo(
     () => items.reduce((sum, i) => sum + i.price * i.quantity, 0),
     [items]
@@ -227,6 +285,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const placeOrder = useCallback((): PlacedOrder | null => {
     if (items.length === 0 || !restaurantId || !restaurantName) return null;
+    if (!validateDeliveryAddress(deliveryAddress).valid) return null;
 
     const comparison = calculateCustomerCheckoutComparison({
       foodSubtotal: subtotal,
@@ -264,6 +323,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     deliveryFee,
     tip,
     total,
+    deliveryAddress,
   ]);
 
   const value = useMemo(
@@ -282,6 +342,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setCartOpen,
       clearCart,
       placeOrder,
+      reorderFromOrder,
+      deliveryAddress,
+      setDeliveryAddress,
+      deliveryAddressValid: addressValidation.valid,
+      deliveryAddressError: addressValidation.message,
       subtotal,
       serviceFee,
       deliveryFee,
@@ -302,6 +367,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQuantity,
       clearCart,
       placeOrder,
+      reorderFromOrder,
+      deliveryAddress,
+      setDeliveryAddress,
+      addressValidation.valid,
+      addressValidation.message,
       subtotal,
       serviceFee,
       deliveryFee,

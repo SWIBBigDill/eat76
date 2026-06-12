@@ -15,7 +15,7 @@ export function FloatingCartFAB() {
     <button
       type="button"
       onClick={() => setCartOpen(true)}
-      className="fixed right-4 z-40 flex items-center gap-3 rounded-full bg-eat-red px-5 py-3.5 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 tap-target bottom-[calc(4.5rem+env(safe-area-inset-bottom))] lg:bottom-6"
+      className="fixed right-4 z-40 flex items-center gap-3 rounded-full bg-eat-red px-5 py-3.5 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 tap-target bottom-[calc(5.5rem+env(safe-area-inset-bottom))] lg:bottom-6 motion-reduce:transition-none motion-reduce:hover:scale-100"
       aria-label={`Open cart, ${itemCount} items, ${formatMoney(total)}`}
     >
       <span className="relative">

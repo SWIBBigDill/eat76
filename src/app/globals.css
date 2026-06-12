@@ -28,10 +28,15 @@
   --font-sans: var(--font-geist-sans);
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: hidden;
 }
 
 .eat-card {
@@ -171,6 +176,7 @@ body {
   .animate-add-pop,
   .animate-pulse-once,
   .animate-success-pop,
+  .animate-pulse-soft,
   .group:hover .object-cover {
     animation: none !important;
     transition: none !important;

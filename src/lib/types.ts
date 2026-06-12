@@ -30,6 +30,8 @@ export type MenuOptionGroup = {
   choices: MenuOptionChoice[];
 };
 
+export type MenuBadge = "popular" | "spicy";
+
 export type MenuItem = {
   id: string;
   restaurantId: string;
@@ -37,6 +39,7 @@ export type MenuItem = {
   description: string;
   price: number;
   image?: string;
+  badges?: MenuBadge[];
   optionGroups?: MenuOptionGroup[];
 };
 

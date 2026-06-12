@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { FloatingCartFAB } from "@/components/order/FloatingCartFAB";
+import { OrderHistoryPanel } from "@/components/order/OrderHistoryPanel";
 import { PopularNearYou } from "@/components/order/PopularNearYou";
 import { RestaurantCard } from "@/components/order/RestaurantCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -130,6 +131,7 @@ export function OrderBrowse() {
 
       <section className="eat-section pt-6 space-y-12">
         <div className="mx-auto max-w-6xl px-4 space-y-12">
+          <OrderHistoryPanel />
           {activeZone === "all" && !search && !activeCuisine && (
             <PopularNearYou compact />
           )}

@@ -40,7 +40,7 @@ export default function RestaurantMenuPage() {
 
   if (!restaurant) {
     return (
-      <PageShell className="pb-20 md:pb-0">
+      <PageShell className={`md:pb-0 ${itemCount > 0 ? "pb-36" : "pb-20"}`}>
         <div className="mx-auto max-w-6xl px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-eat-ink">Restaurant not found</h1>
           <Link href="/order" className="mt-4 inline-block text-eat-blue font-semibold">
@@ -54,7 +54,7 @@ export default function RestaurantMenuPage() {
   const imageSrc = restaurant.image ?? `/restaurants/${restaurant.id}/hero.svg`;
 
   return (
-    <PageShell className="pb-20 md:pb-0">
+    <PageShell className={`md:pb-0 ${itemCount > 0 ? "pb-36" : "pb-20"}`}>
       {/* Hero banner */}
       <section className="relative">
         <div className="relative h-48 w-full bg-eat-soft sm:h-56 md:h-64">
@@ -74,7 +74,7 @@ export default function RestaurantMenuPage() {
             >
               ← All restaurants
             </Link>
-            <h1 className="mt-2 text-3xl font-bold text-white drop-shadow-sm">
+            <h1 className="mt-2 text-2xl font-bold text-white drop-shadow-sm sm:text-3xl line-clamp-2">
               {restaurant.name}
             </h1>
             <p className="mt-1 text-sm text-white/85">
@@ -98,7 +98,7 @@ export default function RestaurantMenuPage() {
 
       {/* Sticky add-to-cart bar when items in cart (mobile) */}
       {itemCount > 0 && !isCartOpen && (
-        <div className="fixed inset-x-0 z-30 border-t border-eat-border bg-white px-4 py-3 shadow-lg lg:hidden bottom-[calc(3.5rem+env(safe-area-inset-bottom))]">
+        <div className="fixed inset-x-0 z-40 border-t border-eat-border bg-white px-4 py-3 shadow-lg lg:hidden bottom-[calc(4.5rem+env(safe-area-inset-bottom))]">
           <button
             type="button"
             onClick={() => setCartOpen(true)}

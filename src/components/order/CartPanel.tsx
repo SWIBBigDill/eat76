@@ -35,6 +35,10 @@ export function CartPanel() {
     isCartOpen,
     setCartOpen,
     placeOrder,
+    deliveryAddress,
+    setDeliveryAddress,
+    deliveryAddressValid,
+    deliveryAddressError,
   } = useCart();
   const router = useRouter();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -49,6 +53,11 @@ export function CartPanel() {
 
   async function handlePlaceOrder() {
     setCheckoutError(null);
+
+    if (!deliveryAddressValid) {
+      setCheckoutError(deliveryAddressError ?? "Enter a valid delivery address");
+      return;
+    }
 
     if (stripeReady && restaurantId && restaurantName) {
       setCheckoutLoading(true);
@@ -65,6 +74,7 @@ export function CartPanel() {
             deliveryFee,
             tip,
             total,
+            deliveryAddress,
           }),
         });
         const data = (await response.json()) as { url?: string; error?: string };
@@ -98,63 +108,54 @@ export function CartPanel() {
           ...order,
           status: "placed",
           source: "demo",
+          deliveryAddress,
         }),
       }).catch(() => undefined);
       router.push("/order/confirmation");
     }
   }
 
+  const cartProps = {
+    items,
+    restaurantName,
+    subtotal,
+    serviceFee,
+    deliveryFee,
+    tip,
+    total,
+    setTip,
+    updateQuantity,
+    clearCart,
+    onPlaceOrder: handlePlaceOrder,
+    checkoutLoading,
+    checkoutError,
+    stripeReady,
+    deliveryAddress,
+    setDeliveryAddress,
+    deliveryAddressValid,
+    deliveryAddressError,
+  };
+
   return (
     <>
       <Card className="hidden lg:block sticky top-24">
-        <CartContent
-          items={items}
-          restaurantName={restaurantName}
-          subtotal={subtotal}
-          serviceFee={serviceFee}
-          deliveryFee={deliveryFee}
-          tip={tip}
-          total={total}
-          setTip={setTip}
-          updateQuantity={updateQuantity}
-          clearCart={clearCart}
-          onPlaceOrder={handlePlaceOrder}
-          checkoutLoading={checkoutLoading}
-          checkoutError={checkoutError}
-          stripeReady={stripeReady}
-        />
+        <CartContent {...cartProps} />
       </Card>
 
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-[55] lg:hidden">
           <button
             type="button"
             className="absolute inset-0 bg-black/40 animate-fade-in"
             aria-label="Close cart"
             onClick={() => setCartOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] animate-slide-up rounded-t-3xl bg-white shadow-2xl safe-bottom">
-            <div className="flex justify-center pt-3 pb-1">
+          <div className="absolute inset-x-0 bottom-0 flex max-h-[88vh] flex-col animate-slide-up rounded-t-3xl bg-white shadow-2xl safe-bottom">
+            <div className="flex shrink-0 justify-center pt-3 pb-1">
               <div className="h-1 w-10 rounded-full bg-eat-border" />
             </div>
-            <div className="overflow-y-auto px-4 pb-6 max-h-[calc(85vh-2rem)]">
-              <CartContent
-                items={items}
-                restaurantName={restaurantName}
-                subtotal={subtotal}
-                serviceFee={serviceFee}
-                deliveryFee={deliveryFee}
-                tip={tip}
-                total={total}
-                setTip={setTip}
-                updateQuantity={updateQuantity}
-                clearCart={clearCart}
-                onPlaceOrder={handlePlaceOrder}
-                compact
-                checkoutLoading={checkoutLoading}
-                checkoutError={checkoutError}
-                stripeReady={stripeReady}
-              />
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+              <CartContent {...cartProps} compact />
             </div>
           </div>
         </div>
@@ -179,6 +180,10 @@ type CartContentProps = {
   checkoutLoading?: boolean;
   checkoutError?: string | null;
   stripeReady?: boolean;
+  deliveryAddress: string;
+  setDeliveryAddress: (address: string) => void;
+  deliveryAddressValid: boolean;
+  deliveryAddressError: string | null;
 };
 
 function CartContent({
@@ -197,6 +202,10 @@ function CartContent({
   checkoutLoading,
   checkoutError,
   stripeReady,
+  deliveryAddress,
+  setDeliveryAddress,
+  deliveryAddressValid,
+  deliveryAddressError,
 }: CartContentProps) {
   return (
     <div className={compact ? "space-y-4" : "space-y-4"}>
@@ -209,8 +218,34 @@ function CartContent({
         </div>
       )}
       {restaurantName && (
-        <p className="text-sm text-eat-muted">From {restaurantName}</p>
+        <p className="text-sm text-eat-muted truncate">From {restaurantName}</p>
       )}
+
+      <div>
+        <label htmlFor={compact ? "delivery-address-mobile" : "delivery-address"} className="text-sm font-medium text-eat-ink">
+          Delivery address
+        </label>
+        <input
+          id={compact ? "delivery-address-mobile" : "delivery-address"}
+          type="text"
+          value={deliveryAddress}
+          onChange={(e) => setDeliveryAddress(e.target.value)}
+          placeholder="Street, city, state, ZIP"
+          className={`tap-target mt-2 w-full rounded-xl border px-3 py-2.5 text-sm text-eat-ink placeholder:text-eat-muted focus:outline-none focus:ring-2 focus:ring-eat-blue/20 ${
+            deliveryAddressValid
+              ? "border-eat-border focus:border-eat-blue"
+              : "border-eat-red/50 focus:border-eat-red"
+          }`}
+        />
+        {!deliveryAddressValid && deliveryAddressError && (
+          <p className="mt-1 text-xs text-eat-red" role="alert">
+            {deliveryAddressError}
+          </p>
+        )}
+        {deliveryAddressValid && (
+          <p className="mt-1 text-xs text-eat-muted">Delivering in your zone</p>
+        )}
+      </div>
 
       <ul className="space-y-2">
         {items.map((item) => (
@@ -305,7 +340,7 @@ function CartContent({
       <Button
         className="w-full tap-target"
         onClick={onPlaceOrder}
-        disabled={checkoutLoading}
+        disabled={checkoutLoading || !deliveryAddressValid}
       >
         {checkoutLoading
           ? "Redirecting to checkout…"

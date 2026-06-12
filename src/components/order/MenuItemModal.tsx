@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { MenuItemBadges } from "@/components/order/MenuItemBadges";
 import type { MenuItem, MenuOptionGroup } from "@/lib/types";
 import {
   areRequiredOptionsMet,
@@ -36,17 +37,30 @@ function OptionGroupSection({
   onToggle: (choiceId: string) => void;
 }) {
   const isRadio = (group.maxSelections ?? 1) === 1;
+  const selectionHint = group.required
+    ? isRadio
+      ? "Choose one"
+      : group.maxSelections
+        ? `Choose up to ${group.maxSelections}`
+        : "Choose at least one"
+    : isRadio
+      ? "Optional"
+      : group.maxSelections
+        ? `Optional · up to ${group.maxSelections}`
+        : "Optional";
 
   return (
     <div className="space-y-2">
-      <div className="flex items-baseline justify-between gap-2">
-        <h4 className="font-semibold text-eat-ink">{group.name}</h4>
-        <span className="text-xs text-eat-muted">
-          {group.required ? "Required" : "Optional"}
-          {!isRadio && group.maxSelections
-            ? ` · up to ${group.maxSelections}`
-            : ""}
-        </span>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <h4 className="font-semibold text-eat-ink">{group.name}</h4>
+          <p className="text-xs text-eat-muted">{selectionHint}</p>
+        </div>
+        {group.required && (
+          <span className="shrink-0 rounded-full bg-eat-red/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-eat-red">
+            Required
+          </span>
+        )}
       </div>
       <div className="space-y-1.5">
         {group.choices.map((choice) => {
@@ -56,13 +70,13 @@ function OptionGroupSection({
               key={choice.id}
               type="button"
               onClick={() => onToggle(choice.id)}
-              className={`tap-target flex w-full items-center justify-between rounded-xl border px-3 py-2.5 text-left text-sm transition ${
+              className={`tap-target flex w-full items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left text-sm transition ${
                 selected
                   ? "border-eat-blue bg-eat-blue/5"
                   : "border-eat-border hover:border-eat-blue/40"
               }`}
             >
-              <span className="flex items-center gap-2.5">
+              <span className="flex min-w-0 flex-1 items-center gap-2.5">
                 <span
                   className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${
                     selected ? "border-eat-blue bg-eat-blue" : "border-eat-border"
@@ -72,7 +86,7 @@ function OptionGroupSection({
                     <span className="h-1.5 w-1.5 rounded-full bg-white" />
                   )}
                 </span>
-                <span className="text-eat-ink">{choice.name}</span>
+                <span className="min-w-0 text-eat-ink line-clamp-2">{choice.name}</span>
               </span>
               {choice.priceDelta > 0 && (
                 <span className="shrink-0 text-eat-muted">
@@ -127,19 +141,19 @@ export function MenuItemModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-[55] lg:z-50">
       <button
         type="button"
         className="absolute inset-0 bg-black/40 animate-fade-in"
         aria-label="Close item details"
         onClick={onClose}
       />
-      <div className="absolute inset-x-0 bottom-0 max-h-[90vh] animate-slide-up rounded-t-3xl bg-white shadow-2xl safe-bottom lg:inset-x-auto lg:bottom-auto lg:left-1/2 lg:top-1/2 lg:max-h-[85vh] lg:w-full lg:max-w-lg lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl">
-        <div className="flex justify-center pt-3 pb-1 lg:hidden">
+      <div className="absolute inset-x-0 bottom-0 flex max-h-[90vh] flex-col animate-slide-up rounded-t-3xl bg-white shadow-2xl safe-bottom lg:inset-x-auto lg:bottom-auto lg:left-1/2 lg:top-1/2 lg:max-h-[85vh] lg:w-full lg:max-w-lg lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl">
+        <div className="flex shrink-0 justify-center pt-3 pb-1 lg:hidden">
           <div className="h-1 w-10 rounded-full bg-eat-border" />
         </div>
 
-        <div className="overflow-y-auto max-h-[calc(90vh-5rem)] px-4 pb-4 lg:max-h-[calc(85vh-5rem)]">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 lg:max-h-[calc(85vh-5rem)]">
           {imageSrc && (
             <div className="relative -mx-4 mb-4 h-40 overflow-hidden bg-eat-soft lg:mx-0 lg:mt-0 lg:rounded-t-3xl lg:h-48">
               <Image
@@ -153,7 +167,8 @@ export function MenuItemModal({
           )}
 
           <div className="flex items-start justify-between gap-3">
-            <div>
+            <div className="min-w-0">
+              <MenuItemBadges badges={item.badges} />
               <h3 className="text-xl font-bold text-eat-ink">{item.name}</h3>
               <p className="mt-1 text-sm text-eat-muted">{item.description}</p>
             </div>
@@ -204,7 +219,7 @@ export function MenuItemModal({
           </div>
         </div>
 
-        <div className="border-t border-eat-border px-4 py-4">
+        <div className="shrink-0 border-t border-eat-border bg-white px-4 py-4 safe-bottom">
           {!canAdd && (
             <p className="mb-2 text-center text-xs text-eat-red">
               Please choose all required options

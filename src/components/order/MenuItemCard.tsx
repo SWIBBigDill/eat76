@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { MenuItemBadges } from "@/components/order/MenuItemBadges";
 import { MenuItemModal } from "@/components/order/MenuItemModal";
 import { useCart } from "@/context/CartContext";
 import {
@@ -88,7 +89,8 @@ export function MenuItemCard({ item, restaurantImage }: MenuItemCardProps) {
             onClick={() => hasOptions && setModalOpen(true)}
             className={`text-left ${hasOptions ? "cursor-pointer" : "cursor-default"}`}
           >
-            <h4 className="font-semibold text-eat-ink">{item.name}</h4>
+            <MenuItemBadges badges={item.badges} />
+            <h4 className="font-semibold text-eat-ink line-clamp-2">{item.name}</h4>
             <p className="mt-0.5 text-sm text-eat-muted line-clamp-2">
               {item.description}
             </p>

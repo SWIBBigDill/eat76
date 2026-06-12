@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
+import { OrderHistoryPanel } from "@/components/order/OrderHistoryPanel";
 import { OrderTracker } from "@/components/order/OrderTracker";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -147,6 +148,10 @@ export default function OrderConfirmationPage() {
               You saved {formatMoney(order.savings)} vs a typical big delivery app on this order.
             </p>
           )}
+
+          <div className="mt-6">
+            <OrderHistoryPanel compact />
+          </div>
 
           <div className="mt-8 flex flex-col gap-3">
             <Button href={`/order/track/${order.id}`}>Track order</Button>
