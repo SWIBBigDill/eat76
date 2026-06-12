@@ -1,13 +1,7 @@
-/**
- * Browser Supabase client stub.
- *
- * When ready to connect:
- *   npm install @supabase/supabase-js
- *   Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
- *
- * import { createBrowserClient } from '@supabase/ssr'
- * export const supabase = createBrowserClient(url, anonKey)
- */
+"use client";
+
+import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export function isSupabaseConfigured(): boolean {
   return Boolean(
@@ -16,4 +10,16 @@ export function isSupabaseConfigured(): boolean {
   );
 }
 
-export const supabase = null as unknown as null;
+let cached: SupabaseClient | null = null;
+
+export function getSupabaseBrowser(): SupabaseClient | null {
+  if (!isSupabaseConfigured()) return null;
+  if (typeof window === "undefined") return null;
+  if (!cached) {
+    cached = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+  }
+  return cached;
+}

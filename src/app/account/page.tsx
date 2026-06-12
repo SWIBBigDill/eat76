@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { OrderHistoryPanel } from "@/components/order/OrderHistoryPanel";
 import { Button } from "@/components/ui/Button";
@@ -12,7 +12,8 @@ import { useCart } from "@/context/CartContext";
 import {
   loadCustomerProfile,
   requestMagicLink,
-  signOutCustomer,
+  signOutEverywhere,
+  syncProfileFromSupabase,
   type CustomerProfile,
 } from "@/lib/customer-profile";
 import { DEFAULT_DELIVERY_ADDRESS } from "@/lib/delivery-address";
@@ -42,9 +43,20 @@ export default function AccountPage() {
     setUnread(unreadNotificationCount());
   }, []);
 
-  function handleSignIn(event: React.FormEvent) {
+  useEffect(() => {
+    let cancelled = false;
+    void syncProfileFromSupabase().then((synced) => {
+      if (!cancelled && synced) setProfile(synced);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleSignIn(event: React.FormEvent) {
     event.preventDefault();
-    const result = requestMagicLink(emailInput);
+    setSignInMessage("Sending...");
+    const result = await requestMagicLink(emailInput);
     setSignInMessage(result.message);
     if (result.sent) {
       refresh();
@@ -52,8 +64,8 @@ export default function AccountPage() {
     }
   }
 
-  function handleSignOut() {
-    signOutCustomer();
+  async function handleSignOut() {
+    await signOutEverywhere();
     refresh();
     setSignInMessage(null);
   }
@@ -87,14 +99,18 @@ export default function AccountPage() {
                     Signed in {new Date(profile.signedInAt).toLocaleDateString()}
                   </p>
                 )}
-                <Button variant="outline" className="mt-4 w-full" onClick={handleSignOut}>
+                <Button
+                  variant="outline"
+                  className="mt-4 w-full"
+                  onClick={() => void handleSignOut()}
+                >
                   Sign out
                 </Button>
               </div>
             ) : (
               <form onSubmit={handleSignIn} className="space-y-3">
                 <p className="text-sm text-eat-muted">
-                  Sign in with email to sync your profile on this device. Full auth ships with Supabase.
+                  Sign in with your email. We send a one-time sign-in link, no password needed.
                 </p>
                 <Input
                   label="Email"

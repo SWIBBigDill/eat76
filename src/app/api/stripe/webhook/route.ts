@@ -47,7 +47,6 @@ export async function POST(request: Request) {
       });
 
       try {
-        // Swap to Supabase: await supabase.from('orders').insert(order)
         await saveOrder(order);
         console.info("[eat76/stripe] order saved", {
           orderId: order.id,

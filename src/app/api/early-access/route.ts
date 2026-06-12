@@ -17,7 +17,6 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Swap to Supabase: await supabase.from('early_access').insert({ type, payload: body })
     const saved = await saveSubmission(body);
     return NextResponse.json({ ok: true, id: saved.submittedAt });
   } catch (error) {

@@ -49,15 +49,71 @@ export function signOutCustomer(): CustomerProfile {
   return profile;
 }
 
-/** Demo magic link flow. TODO: Replace with Supabase Auth magic link when auth ships. */
-export function requestMagicLink(email: string): { sent: boolean; message: string } {
+/**
+ * Magic link sign-in. Uses Supabase Auth when configured; otherwise falls
+ * back to a device-local demo profile.
+ */
+export async function requestMagicLink(
+  email: string
+): Promise<{ sent: boolean; message: string }> {
   const trimmed = email.trim().toLowerCase();
   if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
     return { sent: false, message: "Enter a valid email address" };
   }
+
+  const { getSupabaseBrowser } = await import("@/lib/supabase/client");
+  const supabase = getSupabaseBrowser();
+  if (supabase) {
+    const { error } = await supabase.auth.signInWithOtp({
+      email: trimmed,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/account`,
+      },
+    });
+    if (error) {
+      return { sent: false, message: `Could not send sign-in link: ${error.message}` };
+    }
+    return {
+      sent: true,
+      message: "Check your email for a sign-in link.",
+    };
+  }
+
   signInWithEmail(trimmed);
   return {
     sent: true,
     message: "Demo sign-in complete. Your profile is saved on this device.",
   };
+}
+
+/**
+ * Pulls the signed-in Supabase user (if any) into the local profile so the
+ * rest of the app keeps working off CustomerProfile.
+ */
+export async function syncProfileFromSupabase(): Promise<CustomerProfile | null> {
+  const { getSupabaseBrowser } = await import("@/lib/supabase/client");
+  const supabase = getSupabaseBrowser();
+  if (!supabase) return null;
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
+  if (!user?.email) return null;
+  const profile: CustomerProfile = {
+    name:
+      (user.user_metadata?.full_name as string | undefined) ??
+      user.email.split("@")[0],
+    email: user.email,
+    signedIn: true,
+    signedInAt: user.last_sign_in_at ?? new Date().toISOString(),
+  };
+  saveCustomerProfile(profile);
+  return profile;
+}
+
+export async function signOutEverywhere(): Promise<CustomerProfile> {
+  const { getSupabaseBrowser } = await import("@/lib/supabase/client");
+  const supabase = getSupabaseBrowser();
+  if (supabase) {
+    await supabase.auth.signOut();
+  }
+  return signOutCustomer();
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { useCart } from "@/context/CartContext";
+import { loadCustomerProfile } from "@/lib/customer-profile";
 import { isStripeClientConfigured } from "@/lib/stripe/client";
 import { getDeliveryTimeSlots } from "@/lib/delivery-slots";
 
@@ -114,6 +115,17 @@ export function CartPanel() {
   function placeDemoOrder() {
     const order = placeOrder();
     if (order) {
+      let customerName: string | undefined;
+      let customerEmail: string | undefined;
+      try {
+        const profile = loadCustomerProfile();
+        if (profile.signedIn) {
+          customerName = profile.name || undefined;
+          customerEmail = profile.email || undefined;
+        }
+      } catch {
+        /* profile optional */
+      }
       void fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -122,6 +134,8 @@ export function CartPanel() {
           status: "placed",
           source: "demo",
           deliveryAddress,
+          customerName,
+          customerEmail,
         }),
       }).catch(() => undefined);
       router.push("/order/confirmation");

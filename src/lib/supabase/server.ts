@@ -1,25 +1,44 @@
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
 /**
- * Server Supabase client stub.
+ * Server-side Supabase client.
  *
- * When ready to connect:
- *   npm install @supabase/supabase-js @supabase/ssr
- *   Set NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
- *
- * import { createServerClient } from '@supabase/ssr'
- * import { cookies } from 'next/headers'
+ * Prefers the secret key (SUPABASE_SECRET_KEY or legacy SUPABASE_SERVICE_ROLE_KEY)
+ * which bypasses RLS. Falls back to the publishable/anon key, which works through
+ * the narrow RLS policies and security-definer RPCs defined in
+ * supabase/migrations. If no Supabase env vars are set, returns null and the
+ * app uses the local file store.
  */
 
-export function isSupabaseServerConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+function serverKey(): string | undefined {
+  return (
+    process.env.SUPABASE_SECRET_KEY ??
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
 }
 
-export async function createSupabaseServerClient() {
-  if (!isSupabaseServerConfigured()) {
-    throw new Error("Supabase is not configured. See supabase/migrations/001_initial.sql");
+export function isSupabaseServerConfigured(): boolean {
+  return Boolean(SUPABASE_URL && serverKey());
+}
+
+/** True when the server has elevated (RLS-bypassing) access. */
+export function hasSupabaseAdminKey(): boolean {
+  return Boolean(
+    process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
+
+let cached: SupabaseClient | null = null;
+
+export function getSupabaseServer(): SupabaseClient | null {
+  if (!isSupabaseServerConfigured()) return null;
+  if (!cached) {
+    cached = createClient(SUPABASE_URL!, serverKey()!, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
   }
-  // return createServerClient(...)
-  return null;
+  return cached;
 }

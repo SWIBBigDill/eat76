@@ -16,7 +16,7 @@ import {
 } from "@/lib/order-tracking";
 import { recordOrderStatusNotification } from "@/lib/notifications";
 
-const POLL_INTERVAL_MS = 30_000;
+const POLL_INTERVAL_MS = 10_000;
 const DEMO_TICK_MS = 5_000;
 
 type ApiOrder = TrackedOrder & { etaMinutes?: number };
@@ -51,6 +51,9 @@ export function useOrderTracking(order: PlacedOrder | null): UseOrderTrackingRes
   const [etaMinutes, setEtaMinutes] = useState(0);
   const [notification, setNotification] = useState<string | null>(null);
   const prevStatusRef = useRef<OrderTrackStatus | null>(null);
+  // True once the orders API answers for this order; from then on the server
+  // is the source of truth and the local demo timer stops advancing status.
+  const apiLiveRef = useRef(false);
 
   const notifyStatusChange = useCallback((status: OrderTrackStatus) => {
     const step = TRACK_STEPS.find((s) => s.status === status);
@@ -84,6 +87,7 @@ export function useOrderTracking(order: PlacedOrder | null): UseOrderTrackingRes
       const res = await fetch(`/api/orders/${order.id}`);
       if (res.ok) {
         const data = (await res.json()) as { order: ApiOrder };
+        apiLiveRef.current = true;
         const merged = mergeApiOrder(order, data.order);
         applyStatus(merged.status, order);
         if (data.order.etaMinutes !== undefined) {
@@ -135,9 +139,21 @@ export function useOrderTracking(order: PlacedOrder | null): UseOrderTrackingRes
     if (!order || !tracked) return;
 
     const tick = () => {
+      const current = tracked.status;
+
+      if (apiLiveRef.current) {
+        // Server-backed order: just keep ETA fresh between polls.
+        setEtaMinutes(getEtaMinutes(current, order.placedAt));
+        if (current === "on_the_way" && tracked.minutesAway > 2) {
+          setTracked((prev) =>
+            prev ? { ...prev, minutesAway: Math.max(2, prev.minutesAway - 1) } : prev
+          );
+        }
+        return;
+      }
+
       const apiStatus = loadLocalOrderStatus(order.id);
       const demoStatus = getDemoTrackStatus(order.placedAt);
-      const current = tracked.status;
       const next = apiStatus && statusRank(apiStatus) >= statusRank(demoStatus) ? apiStatus : demoStatus;
 
       if (statusRank(next) > statusRank(current)) {

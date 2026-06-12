@@ -3,6 +3,7 @@ import {
   driverPositionAlongRoute,
   routeProgressForStatus,
 } from "@/lib/driver-location";
+import { sendOrderStatusEmail } from "@/lib/notify/email";
 import { getEtaMinutes, normalizeStatus, type OrderTrackStatus } from "@/lib/order-tracking";
 import { getOrderById, updateOrder, type StoredOrder } from "@/lib/store/orders";
 
@@ -66,6 +67,9 @@ export async function PATCH(request: Request, context: RouteContext) {
     const updated = await updateOrder(id, patch);
     if (!updated) {
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
+    }
+    if (patch.status) {
+      void sendOrderStatusEmail(updated, patch.status);
     }
     return NextResponse.json({ ok: true, order: enrichForResponse(updated) });
   } catch (error) {
