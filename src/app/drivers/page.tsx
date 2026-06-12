@@ -1,4 +1,5 @@
 import { EarlyAccessForm } from "@/components/forms/EarlyAccessForm";
+import { OrderBanner } from "@/components/home/OrderBanner";
 import { PageShell } from "@/components/layout/PageShell";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -6,12 +7,16 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export default function DriversPage() {
   return (
-    <PageShell>
-      <section className="eat-section bg-gradient-to-b from-eat-soft to-white">
+    <PageShell className="pb-20 md:pb-0">
+      <OrderBanner />
+      <section className="eat-section bg-gradient-to-b from-eat-soft to-white !py-8 md:!py-12">
         <div className="mx-auto max-w-6xl px-4">
+          <p className="text-sm font-semibold uppercase tracking-wide text-eat-muted">
+            Drive with Eat76
+          </p>
           <SectionHeading
             title="Drive local. Earn better. Stay known."
-            subtitle="Local routes. Clear pay. 100% of tips. Built around one market first."
+            subtitle="Local routes. Clear pay. 100% of tips. Built around 19348 first."
           />
         </div>
       </section>

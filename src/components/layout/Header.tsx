@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/brand/Logo";
+import { Button } from "@/components/ui/Button";
 
 const links = [
   { href: "/order", label: "Order" },
-  { href: "/restaurants", label: "Restaurants" },
-  { href: "/drivers", label: "Drivers" },
+  { href: "/#how-it-works", label: "How it works" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/admin", label: "Admin Demo" },
 ];
 
 export function Header() {
@@ -22,8 +21,11 @@ export function Header() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((link) => {
+            const basePath = link.href.split("#")[0];
             const active =
-              pathname === link.href || pathname.startsWith(`${link.href}/`);
+              basePath === "/"
+                ? pathname === "/"
+                : pathname === basePath || pathname.startsWith(`${basePath}/`);
             return (
               <Link
                 key={link.href}
@@ -38,15 +40,14 @@ export function Header() {
               </Link>
             );
           })}
+          <Button href="/order" className="ml-2 px-5 py-2.5">
+            Order Now
+          </Button>
         </nav>
 
-        {/* Mobile: logo only — bottom tab nav handles navigation */}
-        <Link
-          href="/pricing"
-          className="tap-target rounded-xl px-3 py-2 text-sm font-semibold text-eat-blue md:hidden"
-        >
-          Pricing
-        </Link>
+        <Button href="/order" className="md:hidden tap-target px-4 py-2">
+          Order Now
+        </Button>
       </div>
     </header>
   );

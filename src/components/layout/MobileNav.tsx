@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const tabs = [
   {
     href: "/",
     label: "Home",
+    primary: false,
     icon: (active: boolean) => (
       <svg className="h-6 w-6" fill={active ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 0 : 2}>
         {active ? (
@@ -18,63 +20,143 @@ const tabs = [
     ),
   },
   {
-    href: "/order",
-    label: "Order",
+    href: "/pricing",
+    label: "Savings",
+    primary: false,
     icon: (active: boolean) => (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 2.5 : 2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/order",
+    label: "Order",
+    primary: true,
+    icon: (active: boolean) => (
+      <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 2.5 : 2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
       </svg>
     ),
   },
   {
-    href: "/restaurants",
-    label: "Restaurants",
+    href: "",
+    label: "More",
+    primary: false,
+    isMore: true,
     icon: (active: boolean) => (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 2.5 : 2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-  },
-  {
-    href: "/drivers",
-    label: "Drivers",
-    icon: (active: boolean) => (
-      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 2.5 : 2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
     ),
   },
 ];
 
+const moreLinks = [
+  { href: "/restaurants", label: "Restaurant partners", description: "Join as a restaurant" },
+  { href: "/drivers", label: "Drive with Eat76", description: "Apply to deliver locally" },
+  { href: "/#early-access", label: "Early access waitlist", description: "Customer, restaurant, or driver" },
+];
+
 export function MobileNav() {
   const pathname = usePathname();
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  const moreActive =
+    pathname === "/restaurants" ||
+    pathname.startsWith("/restaurants/") ||
+    pathname === "/drivers" ||
+    pathname.startsWith("/drivers/");
 
   return (
-    <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-eat-border bg-white/95 backdrop-blur md:hidden safe-bottom"
-      aria-label="Mobile navigation"
-    >
-      <div className="mx-auto flex max-w-lg items-stretch justify-around px-2 py-1">
-        {tabs.map((tab) => {
-          const active =
-            tab.href === "/"
-              ? pathname === "/"
-              : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+    <>
+      <nav
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-eat-border bg-white/95 backdrop-blur md:hidden safe-bottom"
+        aria-label="Mobile navigation"
+      >
+        <div className="mx-auto flex max-w-lg items-end justify-around px-2 py-1">
+          {tabs.map((tab) => {
+            if (tab.isMore) {
+              return (
+                <button
+                  key="more"
+                  type="button"
+                  onClick={() => setMoreOpen(true)}
+                  className={`flex min-h-[56px] min-w-[64px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-2 text-xs font-semibold transition-colors tap-target ${
+                    moreActive || moreOpen ? "text-eat-blue" : "text-eat-muted hover:text-eat-blue"
+                  }`}
+                >
+                  {tab.icon(moreActive || moreOpen)}
+                  <span>{tab.label}</span>
+                </button>
+              );
+            }
 
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={`flex min-h-[56px] min-w-[64px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-2 text-xs font-semibold transition-colors tap-target ${
-                active ? "text-eat-blue" : "text-eat-muted hover:text-eat-blue"
-              }`}
-            >
-              {tab.icon(active)}
-              <span>{tab.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+            const active =
+              tab.href === "/"
+                ? pathname === "/"
+                : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+
+            if (tab.primary) {
+              return (
+                <Link
+                  key={tab.href}
+                  href={tab.href}
+                  className="-mt-3 flex min-h-[64px] min-w-[72px] flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl bg-eat-blue px-3 py-2 text-xs font-bold text-white shadow-lg transition-transform active:scale-95 tap-target"
+                  aria-current={active ? "page" : undefined}
+                >
+                  {tab.icon(active)}
+                  <span>{tab.label}</span>
+                </Link>
+              );
+            }
+
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={`flex min-h-[56px] min-w-[64px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-2 text-xs font-semibold transition-colors tap-target ${
+                  active ? "text-eat-blue" : "text-eat-muted hover:text-eat-blue"
+                }`}
+                aria-current={active ? "page" : undefined}
+              >
+                {tab.icon(active)}
+                <span>{tab.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      {moreOpen && (
+        <div className="fixed inset-0 z-[60] md:hidden" role="dialog" aria-modal="true" aria-label="More options">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            aria-label="Close menu"
+            onClick={() => setMoreOpen(false)}
+          />
+          <div className="absolute inset-x-0 bottom-0 animate-slide-up rounded-t-3xl bg-white pb-[calc(env(safe-area-inset-bottom)+80px)] shadow-2xl">
+            <div className="mx-auto max-w-lg px-4 pt-4">
+              <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-eat-border" />
+              <p className="mb-4 text-lg font-bold text-eat-ink">Partner with Eat76</p>
+              <div className="space-y-2">
+                {moreLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMoreOpen(false)}
+                    className="flex flex-col rounded-2xl border border-eat-border px-4 py-3 transition hover:border-eat-blue/40 hover:bg-eat-soft tap-target"
+                  >
+                    <span className="font-semibold text-eat-ink">{link.label}</span>
+                    <span className="text-sm text-eat-muted">{link.description}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

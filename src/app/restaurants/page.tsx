@@ -1,5 +1,6 @@
 import { RestaurantSavingsCalculator } from "@/components/calculators/RestaurantSavingsCalculator";
 import { EarlyAccessForm } from "@/components/forms/EarlyAccessForm";
+import { OrderBanner } from "@/components/home/OrderBanner";
 import { PageShell } from "@/components/layout/PageShell";
 import { StripeConnectOnboardButton } from "@/components/stripe/StripeConnectOnboardButton";
 import { Button } from "@/components/ui/Button";
@@ -8,15 +9,19 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export default function RestaurantsPage() {
   return (
-    <PageShell>
-      <section className="eat-section bg-gradient-to-b from-eat-soft to-white">
+    <PageShell className="pb-20 md:pb-0">
+      <OrderBanner />
+      <section className="eat-section bg-gradient-to-b from-eat-soft to-white !py-8 md:!py-12">
         <div className="mx-auto max-w-6xl px-4">
+          <p className="text-sm font-semibold uppercase tracking-wide text-eat-muted">
+            Partner with Eat76
+          </p>
           <SectionHeading
             title="Keep more of every order"
-            subtitle="Own your customers. Work with a local delivery partner that actually knows the market."
+            subtitle="Own your customers. Work with a local delivery partner that actually knows 19348."
           />
-          <p className="mt-4 max-w-3xl text-eat-muted">
-            Most big delivery apps charge high marketplace fees and do not give restaurants enough control. Eat76 keeps the pricing simple. During launch, restaurants pay only when orders come in. The rate starts at 17.76% for the first 150 monthly orders, then drops to 12% after that to reward volume.
+          <p className="mt-4 max-w-3xl text-sm text-eat-muted">
+            During launch, restaurants pay only when orders come in — 17.76% for the first 150 monthly orders, then 12% after that.
           </p>
         </div>
       </section>

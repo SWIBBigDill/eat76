@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { CheckoutSavings } from "@/components/order/CheckoutSavings";
 import { FloatingCartFAB } from "@/components/order/FloatingCartFAB";
 import { RestaurantCard } from "@/components/order/RestaurantCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -32,12 +33,19 @@ export function OrderBrowse() {
     <>
       <section className="eat-section bg-gradient-to-b from-eat-soft to-white">
         <div className="mx-auto max-w-6xl px-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-eat-red/10 px-3 py-1 text-xs font-bold text-eat-red">
+            Save vs big delivery apps
+          </span>
           <SectionHeading
+            className="mt-3"
             title="Order local near 19348"
-            subtitle="No mystery checkout pile-on. Clear delivery fee. Clear service fee. Local restaurants. Local drivers."
+            subtitle="Browse Kennett Square favorites. $1.76 service + $4.76 delivery — every fee shown before checkout."
           />
+          <div className="mt-5 max-w-md">
+            <CheckoutSavings foodSubtotal={28} tip={4} compact />
+          </div>
           <p className="mt-4 text-sm text-eat-muted">
-            {restaurants.length} local prospects within ~10 miles of Kennett Square — images from restaurant-owned sites where available.
+            {restaurants.length} local restaurants within ~10 miles — real photos where available.
           </p>
         </div>
       </section>
