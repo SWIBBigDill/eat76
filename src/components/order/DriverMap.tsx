@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { googleMapsEmbedViewUrl } from "@/lib/google-maps";
 import type { OrderTrackStatus } from "@/lib/order-tracking";
 
 type DriverMapProps = {
@@ -51,13 +52,21 @@ export function DriverMap({
     };
   }, [status, showDriver]);
 
+  // Google Maps Embed when NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is set, OSM otherwise.
+  const googleMapUrl = googleMapsEmbedViewUrl(15);
+
   const mapContent = (
     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-eat-soft sm:aspect-[16/9]">
       <iframe
         title="Delivery map"
         className="absolute inset-0 h-full w-full border-0 opacity-90"
-        src={`https://www.openstreetmap.org/export/embed.html?bbox=${MAP_BBOX}&layer=mapnik&marker=39.8468%2C-75.7116`}
+        src={
+          googleMapUrl ??
+          `https://www.openstreetmap.org/export/embed.html?bbox=${MAP_BBOX}&layer=mapnik&marker=39.8468%2C-75.7116`
+        }
         loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        allowFullScreen
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent" />
 

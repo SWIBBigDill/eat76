@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  driverPositionAlongRoute,
-  routeProgressForStatus,
-} from "@/lib/driver-location";
+import { routeProgressForStatus } from "@/lib/driver-location";
+import { driverPositionAlongStreetRoute } from "@/lib/osrm-route";
 import { sendOrderStatusEmail } from "@/lib/notify/email";
 import { getEtaMinutes, normalizeStatus, type OrderTrackStatus } from "@/lib/order-tracking";
 import { getOrderById, updateOrder, type StoredOrder } from "@/lib/store/orders";
@@ -11,10 +9,12 @@ export const runtime = "nodejs";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-function enrichForResponse(order: StoredOrder): StoredOrder & { etaMinutes: number } {
+async function enrichForResponse(
+  order: StoredOrder
+): Promise<StoredOrder & { etaMinutes: number }> {
   const status = normalizeStatus(order.status);
   const routeProgress = routeProgressForStatus(status);
-  const driverLocation = driverPositionAlongRoute(routeProgress);
+  const driverLocation = await driverPositionAlongStreetRoute(routeProgress);
   const etaMinutes = getEtaMinutes(status, order.placedAt);
   const minutesAway =
     status === "on_the_way" || status === "driver_picked_up"
@@ -38,7 +38,7 @@ export async function GET(_request: Request, context: RouteContext) {
     if (!order) {
       return NextResponse.json({ error: "Order not found." }, { status: 404 });
     }
-    return NextResponse.json({ order: enrichForResponse(order) });
+    return NextResponse.json({ order: await enrichForResponse(order) });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to load order.";
     return NextResponse.json({ error: message }, { status: 500 });
@@ -71,7 +71,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     if (patch.status) {
       void sendOrderStatusEmail(updated, patch.status);
     }
-    return NextResponse.json({ ok: true, order: enrichForResponse(updated) });
+    return NextResponse.json({ ok: true, order: await enrichForResponse(updated) });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to update order.";
     return NextResponse.json({ error: message }, { status: 500 });

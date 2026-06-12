@@ -8,6 +8,7 @@ import { OrderTracker } from "@/components/order/OrderTracker";
 import { OrderUpdateToast } from "@/components/order/OrderUpdateToast";
 import { RateOrder } from "@/components/order/RateOrder";
 import { PageShell } from "@/components/layout/PageShell";
+import { WeatherDeliveryNote } from "@/components/weather/LocalWeather";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import type { PlacedOrder } from "@/context/CartContext";
@@ -128,6 +129,8 @@ export default function TrackOrderPage() {
           <p className="mt-1 text-sm text-eat-muted">
             Live updates refresh every 30 seconds.
           </p>
+
+          {!isDelivered && <WeatherDeliveryNote />}
 
           {showMap && (
             <div className="mt-6">

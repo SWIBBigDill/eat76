@@ -16,6 +16,7 @@ import {
   syncProfileFromSupabase,
   type CustomerProfile,
 } from "@/lib/customer-profile";
+import { ZipConfirmation } from "@/components/account/ZipConfirmation";
 import { DEFAULT_DELIVERY_ADDRESS } from "@/lib/delivery-address";
 import { loadFavoriteIds } from "@/lib/favorites";
 import {
@@ -143,6 +144,7 @@ export default function AccountPage() {
               onChange={(e) => setDeliveryAddress(e.target.value)}
               placeholder={DEFAULT_DELIVERY_ADDRESS}
             />
+            <ZipConfirmation address={deliveryAddress} />
           </Card>
 
           <Card className="mt-6">

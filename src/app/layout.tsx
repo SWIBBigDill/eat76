@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CartProvider } from "@/context/CartContext";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { PWARegister } from "@/components/pwa/PWARegister";
@@ -75,6 +76,7 @@ export default function RootLayout({
           <PWARegister />
           <InstallPrompt />
         </CartProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );

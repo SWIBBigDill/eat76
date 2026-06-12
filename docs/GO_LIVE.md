@@ -56,7 +56,29 @@ Note: these are LIVE keys. Checkout charges real cards. The Connect button on
 
 Order confirmation and delivery emails start sending automatically.
 
-### 3. Business steps (the real work)
+### 3. Google integrations (optional, 15 minutes)
+
+The code is live and env-gated; everything below works the moment a key is set,
+and the site keeps its current behavior (OpenStreetMap, plain address inputs,
+email-only sign-in, no analytics) until then.
+
+1. Maps and address autocomplete: in Google Cloud Console
+   (https://console.cloud.google.com), create an API key and enable the
+   Maps Embed API, Maps JavaScript API, and Places API. Add the key to Vercel
+   as `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`. Order tracking and the driver
+   dashboard switch to Google Maps, and address fields in the cart and on
+   /account get autocomplete biased to Kennett Square.
+2. Google sign-in: in Google Cloud Console, create an OAuth client ID
+   (Web application) with redirect URI
+   `https://acnjhuznxwquxaaflmrm.supabase.co/auth/v1/callback`. Then in the
+   Supabase dashboard, open Authentication > Providers > Google and paste the
+   client ID and secret. The "Continue with Google" button on /account starts
+   working; until then it shows a friendly fallback message.
+3. Analytics: create a GA4 property at https://analytics.google.com, copy the
+   Measurement ID (G-XXXXXXXXXX), and add it to Vercel as
+   `NEXT_PUBLIC_GA_MEASUREMENT_ID`. gtag.js loads on every page automatically.
+
+### 4. Business steps (the real work)
 
 - Sign 5-10 restaurants in 19348; replace template menus with verified ones
 - Onboard each signed restaurant through Stripe Connect (button on /restaurants)

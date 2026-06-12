@@ -8,6 +8,7 @@ import { PopularNearYou } from "@/components/order/PopularNearYou";
 import { RestaurantCard } from "@/components/order/RestaurantCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EmptyRestaurantsIllustration } from "@/components/ui/EmptyIllustrations";
+import { WeatherChip } from "@/components/weather/LocalWeather";
 import { getRestaurantsByZone, restaurants } from "@/data/restaurants";
 import { deliveryZones, type DeliveryZoneId } from "@/data/zones";
 import {
@@ -87,9 +88,12 @@ export function OrderBrowse() {
     <>
       <section className="eat-section bg-gradient-to-b from-eat-soft to-white">
         <div className="mx-auto max-w-6xl px-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-eat-red/10 px-3 py-1 text-xs font-bold text-eat-red">
-            Save vs big delivery apps
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-eat-red/10 px-3 py-1 text-xs font-bold text-eat-red">
+              Save vs big delivery apps
+            </span>
+            <WeatherChip />
+          </div>
           <SectionHeading
             className="mt-3"
             title="Order local near 19348"

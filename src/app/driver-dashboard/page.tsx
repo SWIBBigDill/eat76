@@ -6,6 +6,7 @@ import { MockLoginBanner } from "@/components/ui/MockLoginBanner";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { googleMapsDirectionsUrl } from "@/lib/driver-location";
+import { googleMapsEmbedDirectionsUrl } from "@/lib/google-maps";
 import type { OrderTrackStatus } from "@/lib/order-tracking";
 import type { StoredOrder } from "@/lib/store/orders";
 
@@ -177,11 +178,20 @@ export default function DriverDashboardPage() {
                 {activeDelivery.restaurantName} → {activeDelivery.deliveryAddress}
               </p>
               <div className="relative mt-4 aspect-[21/9] overflow-hidden rounded-xl bg-eat-soft">
+                {/* Google Maps directions when the API key is set, OSM otherwise */}
                 <iframe
                   title="Active delivery map"
                   className="absolute inset-0 h-full w-full border-0"
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${MAP_BBOX}&layer=mapnik`}
+                  src={
+                    googleMapsEmbedDirectionsUrl(
+                      `${activeDelivery.restaurantName}, Kennett Square, PA 19348`,
+                      activeDelivery.deliveryAddress ?? "Kennett Square, PA 19348"
+                    ) ??
+                    `https://www.openstreetmap.org/export/embed.html?bbox=${MAP_BBOX}&layer=mapnik`
+                  }
                   loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
                 />
                 <div className="absolute left-1/2 top-1/2 z-10 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-eat-blue text-xs font-bold text-white shadow-lg ring-4 ring-white">
                   CP

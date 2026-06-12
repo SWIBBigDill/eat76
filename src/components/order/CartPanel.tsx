@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AddressInput } from "@/components/ui/AddressInput";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CheckoutSavings } from "@/components/order/CheckoutSavings";
@@ -291,11 +292,10 @@ function CartContent({
         <label htmlFor={compact ? "delivery-address-mobile" : "delivery-address"} className="text-sm font-medium text-eat-ink">
           Delivery address
         </label>
-        <input
+        <AddressInput
           id={compact ? "delivery-address-mobile" : "delivery-address"}
-          type="text"
           value={deliveryAddress}
-          onChange={(e) => setDeliveryAddress(e.target.value)}
+          onAddressChange={setDeliveryAddress}
           placeholder="Street, city, state, ZIP"
           className={`tap-target mt-2 w-full rounded-xl border px-3 py-2.5 text-sm text-eat-ink placeholder:text-eat-muted focus:outline-none focus:ring-2 focus:ring-eat-blue/20 ${
             deliveryAddressValid
