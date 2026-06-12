@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { OrderHistoryPanel } from "@/components/order/OrderHistoryPanel";
+import { AddressInput } from "@/components/ui/AddressInput";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -18,6 +19,7 @@ import {
 } from "@/lib/customer-profile";
 import { ZipConfirmation } from "@/components/account/ZipConfirmation";
 import { DEFAULT_DELIVERY_ADDRESS } from "@/lib/delivery-address";
+import { getSupabaseBrowser, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadFavoriteIds } from "@/lib/favorites";
 import {
   loadNotifications,
@@ -53,6 +55,32 @@ export default function AccountPage() {
       cancelled = true;
     };
   }, []);
+
+  async function handleGoogleSignIn() {
+    const supabase = getSupabaseBrowser();
+    if (!supabase) {
+      setSignInMessage("Sign-in is not available right now. Try the email link below.");
+      return;
+    }
+    setSignInMessage("Opening Google sign-in...");
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback?next=/account`,
+        },
+      });
+      if (error) {
+        setSignInMessage(
+          "Google sign-in is not set up yet. Use the email link below instead."
+        );
+      }
+    } catch {
+      setSignInMessage(
+        "Google sign-in is not set up yet. Use the email link below instead."
+      );
+    }
+  }
 
   async function handleSignIn(event: React.FormEvent) {
     event.preventDefault();
@@ -109,39 +137,78 @@ export default function AccountPage() {
                 </Button>
               </div>
             ) : (
-              <form onSubmit={handleSignIn} className="space-y-3">
-                <p className="text-sm text-eat-muted">
-                  Sign in with your email. We send a one-time sign-in link, no password needed.
-                </p>
-                <Input
-                  label="Email"
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  autoComplete="email"
-                />
-                <Button type="submit" className="w-full">
-                  Continue with email
-                </Button>
-                {signInMessage && (
-                  <p className="text-xs text-eat-muted" role="status">
-                    {signInMessage}
-                  </p>
+              <div className="space-y-4">
+                {isSupabaseConfigured() && (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => void handleGoogleSignIn()}
+                    >
+                      <span className="inline-flex items-center justify-center gap-2">
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                          <path
+                            fill="#4285F4"
+                            d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+                          />
+                          <path
+                            fill="#34A853"
+                            d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24z"
+                          />
+                          <path
+                            fill="#FBBC05"
+                            d="M5.27 14.29A7.18 7.18 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a11.99 11.99 0 0 0 0 10.76l3.98-3.09z"
+                          />
+                          <path
+                            fill="#EA4335"
+                            d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0A11.99 11.99 0 0 0 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"
+                          />
+                        </svg>
+                        Continue with Google
+                      </span>
+                    </Button>
+                    <div className="flex items-center gap-3">
+                      <span className="h-px flex-1 bg-eat-border" />
+                      <span className="text-xs font-medium text-eat-muted">or</span>
+                      <span className="h-px flex-1 bg-eat-border" />
+                    </div>
+                  </>
                 )}
-              </form>
+                <form onSubmit={handleSignIn} className="space-y-3">
+                  <p className="text-sm text-eat-muted">
+                    Sign in with your email. We send a one-time sign-in link, no password needed.
+                  </p>
+                  <Input
+                    label="Email"
+                    type="email"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    autoComplete="email"
+                  />
+                  <Button type="submit" className="w-full">
+                    Continue with email
+                  </Button>
+                  {signInMessage && (
+                    <p className="text-xs text-eat-muted" role="status">
+                      {signInMessage}
+                    </p>
+                  )}
+                </form>
+              </div>
             )}
           </Card>
 
           <Card className="mt-6">
             <h2 className="text-base font-bold text-eat-ink">Delivery address</h2>
             <p className="mt-1 text-xs text-eat-muted">Used at checkout. Must include a supported ZIP.</p>
-            <Input
+            <AddressInput
               label="Address"
               className="mt-1"
               value={deliveryAddress}
-              onChange={(e) => setDeliveryAddress(e.target.value)}
+              onAddressChange={setDeliveryAddress}
               placeholder={DEFAULT_DELIVERY_ADDRESS}
             />
             <ZipConfirmation address={deliveryAddress} />
